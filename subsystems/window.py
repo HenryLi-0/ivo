@@ -26,17 +26,8 @@ class Window:
 
         '''load test image'''
         testImage = ImageTk.PhotoImage(PLACEHOLDER_IMAGE)
-        self.w_sketch = {}
-        for region in ALL_REGIONS:
-            self.w_sketch[region] = LabelWrapper(self.window, (128, 94), (region[0]*128+20, region[1]*94+20), (region[0]*128+20, region[1]*94+20), VOID_COLOR)
-        self.w_tools  = LabelWrapper(self.window, ( 288, 179), (1057,  20), (1057,  20), BACKGROUND_COLOR, FRAME_TOOLS_INSTRUCTIONS )
+        self.w_tools  = LabelWrapper(self.window, ( 288, 179), (1057,  20), (1057,  20), BACKGROUND_COLOR, FRAME_SKETCH_INSTRUCTIONS)
         self.b_tools  = self.w_tools .getBlank() 
-        self.w_colors = LabelWrapper(self.window, ( 288, 155), (1057, 212), (1057, 212), BACKGROUND_COLOR, FRAME_COLORS_INSTRUCTIONS)
-        self.b_colors = self.w_colors.getBlank() 
-        self.w_layers = LabelWrapper(self.window, ( 288, 298), (1057, 380), (1057, 380), BACKGROUND_COLOR, FRAME_LAYERS_INSTRUCTIONS)
-        self.b_layers = self.w_layers.getBlank() 
-        self.w_popUp  = LabelWrapper(self.window, ( 288, 179), ( 756,  20), ( 756,  20), BACKGROUND_COLOR, FRAME_LAYERS_INSTRUCTIONS)
-        self.b_popUp  = self.w_popUp.getBlank() 
 
         '''start interface'''
         self.interface = Interface()
@@ -54,16 +45,7 @@ class Window:
         self.interface.tick(mx,my,self.mPressed, self.fps, self.keysPressed, self.mouseScroll)
         self.mouseScroll = 0
         
-        self.w_tools .update(arrayToImage(self.interface.processTools (self.b_tools )))
-        self.w_colors.update(arrayToImage(self.interface.processColors(self.b_colors)))
-        self.w_layers.update(arrayToImage(self.interface.processLayers(self.b_layers)))
-        self.w_popUp .update(arrayToImage(self.interface.processPopUp (self.b_popUp )))
-
-        if self.interface.selectedTool in self.interface.popUpDataIDs:
-            if not(self.w_popUp.shown): self.w_popUp.show()
-        else:
-            if self.w_popUp.shown: self.w_popUp.hide()
-
+        self.w_tools .update(arrayToImage(self.interface.processSketch(self.b_tools )))
 
         self.fpsCounter +=1
         if math.floor(time.time()) == round(time.time()) and not(self.fpsGood):
@@ -80,7 +62,6 @@ class Window:
         print("windowOccaionalProcess")
         self.window.title(f"Interactable Visual Objects {self.interface.ticks}")
         print(self.getFPS())
-        self.interface.scheduleAllRegions(False)
         self.window.after(OCCASIONAL_TICK_MS, self.windowOccasionalProcesses)
 
     def windowStartupProcesses(self):

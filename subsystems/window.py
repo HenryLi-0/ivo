@@ -6,7 +6,7 @@ from PIL import ImageTk, Image
 import time, math
 from subsystems.interface import Interface
 from subsystems.label import LabelWrapper
-from subsystems.render import placeOver, arrayToImage
+from subsystems.render import arrayToImage
 from settings import *
 
 class Window:
@@ -14,7 +14,7 @@ class Window:
         '''initalize tk window'''
         self.window = tk.Tk()
         self.window.grid()
-        self.window.title("Protoplop")
+        self.window.title("Interactable Visual Objects!")
         self.window.geometry("1366x698")
         self.window.configure(background=BACKGROUND_COLOR)
         self.fps = 0
@@ -54,28 +54,6 @@ class Window:
         self.interface.tick(mx,my,self.mPressed, self.fps, self.keysPressed, self.mouseScroll)
         self.mouseScroll = 0
         
-        temp = self.interface.updateSketchLayers or self.interface.updateSketch or len(self.interface.updateSketchRegions) > 0
-        if self.interface.updateSketchLayers:
-            # self.interface.processSketchLayers()
-            # self.interface.updateSketchLayers = False
-            pass
-        if self.interface.updateSketch: 
-            # self.i_sketch = self.interface.processSketch(self.i_sketch)
-            # self.w_sketch.update(arrayToImage(self.i_sketch))
-            # self.interface.updateSketch = False
-            pass
-
-        '''OPTIMIZE, CONSTANT SKETCH SCREEN UPDATES ARE NOT NECCESARY!'''
-        if len(self.interface.updateSketchRegions) > 0:
-            i = 0
-            start = time.time()
-            for i in range(min(SKETCH_MAX_REGIONS, len(self.interface.updateSketchRegions))):
-                region = self.interface.updateSketchRegions.pop(0)
-                temp = arrayToImage(self.interface.processFetchSketchSector(region[0], region[1])).resize((128,94))
-                self.w_sketch[region].update(temp)
-                if time.time() - start > SKETCH_MAX_REGIONS_TIME:
-                    break
-            self.interface.consoleAlerts.append(f"{self.interface.ticks} - regions left: {len(self.interface.updateSketchRegions)}")
         self.w_tools .update(arrayToImage(self.interface.processTools (self.b_tools )))
         self.w_colors.update(arrayToImage(self.interface.processColors(self.b_colors)))
         self.w_layers.update(arrayToImage(self.interface.processLayers(self.b_layers)))
@@ -100,7 +78,7 @@ class Window:
     def windowOccasionalProcesses(self):
         '''window processes that happen less frequently (once every 5 seconds)'''
         print("windowOccaionalProcess")
-        self.window.title(f"Protoplop")
+        self.window.title(f"Interactable Visual Objects {self.interface.ticks}")
         print(self.getFPS())
         self.interface.scheduleAllRegions(False)
         self.window.after(OCCASIONAL_TICK_MS, self.windowOccasionalProcesses)

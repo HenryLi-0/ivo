@@ -20,14 +20,6 @@ from subsystems.window import *
 
 class Check:
     def check():
-        # Program/Subsystem Files
-
-        # Resource Files
-        
-        # Cache
-        
-        # Tests?
-
         print("Finished Checks")
     def error(message):
         print(f"The check has detected an issue: {message}")

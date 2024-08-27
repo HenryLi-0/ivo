@@ -1,10 +1,10 @@
 '''This file contains functions for rendering related purposes'''
 
-from PIL import ImageTk, Image, ImageEnhance
+from PIL import Image, ImageEnhance
 import numpy, math
 from settings import *
 
-#Convert
+# Convert
 
 def imageToArray(img:Image):
     '''Converts an Image into a numpy array'''
@@ -137,52 +137,6 @@ def dPlaceOver(img1:numpy.ndarray, img2: numpy.ndarray, position:list|tuple):
             '''So, you really messed up... told you it was dangerous...'''
             pass
 
-def grabAlpha(img):
-    '''Grabs the alpha channel of an image, then converts it into a grayscale non-transparent image'''
-    imgC = numpy.zeros(img.shape, dtype=numpy.uint8)
-    imgC[:,:,0] = img[:,:,3]
-    imgC[:,:,1] = img[:,:,3]
-    imgC[:,:,2] = img[:,:,3]
-    imgC[:,:,3] = 255
-    return imgC
-
-def applyMask(img1:numpy.ndarray, mask: numpy.ndarray):
-    '''Modifies img1 with transparency mask (range 0-255, 255 being solid, 0 being transparent) of shape (y,x) applied to it'''
-    alpha = img1[:,:,3].astype(numpy.float64)
-    alpha *= (mask[:,:].astype(numpy.float64)/255)
-    img1[:,:,3] = alpha.astype(numpy.uint8)
-
-def placeOverMask(mask:numpy.ndarray, img2:numpy.ndarray, position:list|tuple, center = False):
-    '''Modifies mask as an array of image 2 (overlay) placed on top of mask (background), given as numpy arrays'''
-    if center: position = (round(position[0]-img2.shape[1]*0.5),round(position[1]-img2.shape[0]*0.5))
-    img1H, img1W = mask.shape[:2] 
-    img2H, img2W = img2.shape[:2]
-
-    if position[1]>img1H or -position[1]>img2H: return False
-    if position[0]>img1W or -position[0]>img2W: return False
-    
-    startX = math.floor(max(position[0], 0))
-    startY = math.floor(max(position[1], 0))
-    endX = math.floor(min(position[0]+img2W, img1W))
-    endY = math.floor(min(position[1]+img2H, img1H))
-
-    img2 = img2[round(max(-position[1], 0)):round((max(-position[1], 0)+(endY-startY))), round(max(-position[0], 0)):round((max(-position[0], 0)+(endX-startX)))]
-
-    hue = numpy.mean(img2[:,:,:3], axis = 2)
-    alpha = img2[:,:,3]/255
-    mask[startY:endY, startX:endX] = (mask[startY:endY, startX:endX] * (1-alpha)) + (hue * alpha)
-
-    return True
-
-def maskToImage(mask: numpy.ndarray):
-    y, x= mask.shape
-    img = numpy.empty((y, x, 4), dtype=numpy.uint8)
-    img[:,:,0] = mask
-    img[:,:,1] = mask
-    img[:,:,2] = mask
-    img[:,:,3] = 255
-    return img
-
 def rotateDeg(img: numpy.ndarray, degrees:float):
     '''Returns an array of a rotated version of the given image by (degrees) degrees, using the 0 up CCW rotation system'''
     return numpy.array(Image.fromarray(img).rotate(degrees,expand=True))
@@ -247,29 +201,3 @@ def setLimitedSizeSize(img: numpy.ndarray, size:tuple|list):
 def resizeImage(img: numpy.ndarray, size:tuple|list):
     '''Returns the a copy of the image scaled to shape size'''
     return numpy.array(Image.fromarray(img).resize(size, Image.Resampling.NEAREST))
-
-def fill(img:numpy.ndarray, pixel:tuple|list, color:tuple|list, tolerance:int):
-    '''Modifies the given image with the effects of flood filling the given pixel with the given color and given tolerance'''
-    target_color = img[pixel[1], pixel[0]]    
-    mask = numpy.zeros(img.shape[:2], dtype=bool)
-    mask[pixel[1], pixel[0]] = True
-
-    while True:
-        expanded_mask = numpy.zeros_like(mask)
-
-        expanded_mask[:-1, :] |= mask[1:, :]
-        expanded_mask[1:, :] |= mask[:-1, :]
-        expanded_mask[:, :-1] |= mask[:, 1:]
-        expanded_mask[:, 1:] |= mask[:, :-1]
-        
-        color_diff = numpy.abs(img[:, :, :] - target_color)
-        within_tolerance = numpy.all(color_diff <= tolerance, axis=2)
-
-        new_mask = expanded_mask & within_tolerance & ~mask
-
-        if not numpy.any(new_mask):
-            break
-
-        mask |= new_mask
-    img[mask] = color
-

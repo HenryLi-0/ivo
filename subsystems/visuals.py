@@ -1,39 +1,11 @@
 '''This file contains classes all about the visual objects the user sees'''
 
-import time, numpy, random, math
+import numpy, random, math
 from subsystems.render import placeOver
 from subsystems.fancy import *
 from subsystems.point import *
 from settings import *
 
-class VisualManager:
-    def __init__(self, worker, pruneCount = 5, maxLength = 15):
-        '''A class for caching recently processed inputs in order to save on loading time and CPU power'''
-        self.cache = {}
-        self.memoryManage = []
-        self.worker = worker
-        self.pruneCount = min(pruneCount,maxLength)
-        self.maxLength = maxLength
-    def process(self, key):
-        '''Process and caches an input's output if the input was not recently processed'''
-        if not(str(key) in self.cache):
-            self.cache[str(key)] = self.worker.get(key)
-            self.memoryManage.append(time.time())
-    def getRender(self, key):
-        '''Returns an input's output if the input was recently processed, otherwise processes the input and returns the output'''
-        self.process(key)
-        key = str(key)         
-        self.memoryManage[list(self.cache.keys()).index(key)] = time.time()
-        if len(self.memoryManage) > self.maxLength:
-            prune = self.memoryManage.copy()
-            prune.sort()
-            prune = prune[0:self.pruneCount]
-            for item in prune:
-                i = self.memoryManage.index(item)
-                self.cache.pop(list(self.cache.keys())[i])
-                self.memoryManage.pop(i)
-        return self.cache[key]
-    
 '''Hitboxes'''
 
 class CircularPositionalBox:
@@ -255,34 +227,6 @@ class ToggleVisualObject:
     def getInteractable(self,rmx,rmy):
         return self.positionO.getInteract(rmx, rmy)
 
-class PointVisualObject:
-    '''A smaller movable point OFFSET BY X29,Y242 FOR GRAPH. MEANT FOR THE GRAPH AND THE GRAPH ONLY.'''
-    def __init__(self, name, pos:tuple|list=(random.randrange(0,20), random.randrange(0,20))):
-        self.type = "point"
-        self.name = name
-        self.positionO = CircularPositionalBox(15)
-        self.positionO.setPosition(pos)
-        self.pointData = ""
-    def tick(self, img, active):
-        place = addP(self.positionO.getPosition(), (29,242))
-        if 27<=place[0] and 221<=place[1] and place[0]<=383 and place[1]<=477:
-            placeOver(img, POINT_SELECTED_ARRAY if active else POINT_IDLE_ARRAY, place, True)
-        if type(self.pointData)in [int, float]:
-            if active: placeOver(img, displayText(str(roundf(self.pointData, FLOAT_ACCURACY)), "m"), addP(self.positionO.getPosition(), (29,222)), True)
-        else:
-            if active: placeOver(img, displayText(str(self.pointData), "m"), addP(self.positionO.getPosition(), (29,222)), True)
-        if active: return self.pointData
-    def updatePos(self, rmx, rmy):
-        self.positionO.setPosition((rmx, rmy))
-    def setPointData(self, data):
-        self.pointData = data
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((round(max(minX,min(pos[0],maxX))), round(max(minY,min(pos[1],maxY)))))
-    def getInteractable(self, rmx, rmy):
-        return self.positionO.getInteract(rmx, rmy)
-
 class HorizontalSliderVisualObject:
     '''A slider!!! No way!!! (horizontal)'''
     def __init__(self, name, pos:tuple|list=(random.randrange(0,20), random.randrange(0,20)), length = random.randrange(50,100), sliderRange = [1,100]):
@@ -344,70 +288,6 @@ class VerticalSliderVisualObject:
         self.updatePos(0, self.originalPos[1] + (extent-self.sliderRange[0])/self.displayScalar*self.length)
     def updatePos(self, rmx, rmy):
         self.positionO.setY(max(self.originalPos[1], min(rmy, self.originalPos[1] + self.length)))
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((round(max(minX,min(pos[0],maxX))), round(max(minY,min(pos[1],maxY)))))
-    def getInteractable(self, rmx, rmy):
-        return self.positionO.getInteract(rmx, rmy)
-
-class ColorVisualObject:
-    '''Just a circle that shows a color, but the one that doesn't move!'''
-    def __init__(self, name, pos:tuple|list=(random.randrange(0,20), random.randrange(0,20)), radius = 10, color = (0,0,0,255)):
-        self.type = "color"
-        self.name = name
-        self.positionO = CircularPositionalBox(radius)
-        self.positionO.setPosition(addP(pos, (radius,radius)))
-        self.radius = radius
-        self.color = color
-        self.circleOff = generateCircle(radius, FRAME_COLOR_RGBA)
-        placeOver(self.circleOff, generateCircle(radius-2, color), (radius, radius), True)
-        self.circleOn  = generateCircle(radius, SELECTED_COLOR_RGBA)
-        placeOver(self.circleOn , generateCircle(radius-2, color), (radius, radius), True)
-    def tick(self, img, active):
-        placeOver(img, self.circleOn if active else self.circleOff, self.positionO.getPosition(), True)
-    def getColor(self):
-        return self.color
-    def setColor(self, color):
-        self.color = color
-        self.circleOff = generateCircle(self.radius, FRAME_COLOR_RGBA)
-        placeOver(self.circleOff, generateCircle(self.radius-2, color), (self.radius, self.radius), True)
-        self.circleOn  = generateCircle(self.radius, SELECTED_COLOR_RGBA)
-        placeOver(self.circleOn , generateCircle(self.radius-2, color), (self.radius, self.radius), True)
-    def updatePos(self, rmx, rmy):
-        pass
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((round(max(minX,min(pos[0],maxX))), round(max(minY,min(pos[1],maxY)))))
-    def getInteractable(self, rmx, rmy):
-        return self.positionO.getInteract(rmx, rmy)
-    
-class MovableColorVisualObject:
-    '''Just a circle that shows a color, but the one that can move! FOR COLOR PICKING ONLY!!!'''
-    def __init__(self, name, pos:tuple|list=(random.randrange(0,20), random.randrange(0,20)), radius = 10, color = (0,0,0,255)):
-        self.type = "movable color"
-        self.name = name
-        self.positionO = CircularPositionalBox(radius)
-        self.positionO.setPosition(addP(pos, (radius,radius)))
-        self.radius = radius
-        self.color = color
-        self.circleOff = generateCircle(radius, FRAME_COLOR_RGBA)
-        placeOver(self.circleOff, generateCircle(radius-2, color), (radius, radius), True)
-        self.circleOn  = generateCircle(radius, SELECTED_COLOR_RGBA)
-        placeOver(self.circleOn , generateCircle(radius-2, color), (radius, radius), True)
-    def tick(self, img, active):
-        placeOver(img, self.circleOn if active else self.circleOff, self.positionO.getPosition(), True)
-    def getColor(self):
-        return self.color
-    def setColor(self, color):
-        self.color = color
-        self.circleOff = generateCircle(self.radius, FRAME_COLOR_RGBA)
-        placeOver(self.circleOff, generateCircle(self.radius-2, color), (self.radius, self.radius), True)
-        self.circleOn  = generateCircle(self.radius, SELECTED_COLOR_RGBA)
-        placeOver(self.circleOn , generateCircle(self.radius-2, color), (self.radius, self.radius), True)
-    def updatePos(self, rmx, rmy):
-        self.positionO.setPosition((rmx, rmy))
     def keepInFrame(self, minX, minY, maxX, maxY):
         pos = self.positionO.getPosition()
         if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:

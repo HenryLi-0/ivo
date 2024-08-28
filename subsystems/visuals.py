@@ -77,14 +77,14 @@ from settings import ORB_IDLE_ARRAY, ORB_SELECTED_ARRAY
 
 class OrbVisualObject:
     '''A movable point.'''
-    def __init__(self, name):
+    def __init__(self, name, pos:tuple|list = (random.randrange(0,903), random.randrange(0,507))):
         self.type = "orb"
         self.name = name
         self.positionO = CircularPositionalBox(50)
-        self.positionO.setPosition((random.randrange(0,903), random.randrange(0,507)))
+        self.positionO.setPosition(pos)
     def tick(self, img, active):
         placeOver(img, ORB_SELECTED_ARRAY if active else ORB_IDLE_ARRAY, self.positionO.getPosition(), True)
-        placeOver(img, displayText(self.name, "m"), self.positionO.getPosition(), True)
+        placeOver(img, displayText(self.name, "s"), self.positionO.getPosition(), True)
     def updatePos(self, rmx, rmy):
         self.positionO.setPosition((rmx, rmy))
     def keepInFrame(self, minX, minY, maxX, maxY):

@@ -26,7 +26,8 @@ class Interface:
         '''Interactable Visual Objects'''
         '''
         Code:
-        s - sketch
+        a - example A
+        b - example B
         '''
         self.ivos = {
             -999 : [" ", DummyVisualObject("dummy", (0,0))], # used for not interacting with anything
@@ -34,7 +35,18 @@ class Interface:
             -997 : [" ", DummyVisualObject("dummy", (0,0))], # used by keybinds
             -996 : [" ", DummyVisualObject("dummy", (0,0))], # used by scrolling
 
-            -99 : ["t", IconVisualObject("Example", (0,0), ICON_CONSOLE_ARRAY, (33,33))],
+            # Example Usage
+            -99 : ["a", OrbVisualObject("example", (145,165))],
+            -98 : ["a", ButtonVisualObject("Example Button", (200,150), PLACEHOLDER_IMAGE_5_ARRAY, PLACEHOLDER_IMAGE_3_ARRAY)],
+            -97 : ["a", EditableTextBoxVisualObject("Example Textbox", (20,150), "Textbox", False)],
+            -96 : ["a", IconVisualObject("Example Icon", (20,195), ICON_CONSOLE_ARRAY, (33,33))],
+            -95 : ["a", ToggleVisualObject("Example Toggle", (20,245), ICON_CONSOLE_ARRAY, ICON_CONSOLE_ARRAY, (33,33), lambda: print("on"), lambda: print("off"))],
+            -94 : ["a", HorizontalSliderVisualObject("Example Horizontal Slider", (50,300), 100, [0,100])],
+            -93 : ["a", VerticalSliderVisualObject("Example Vertical Slider", (20,330), 100, [0,100])],
+            -92 : ["a", CheckboxVisualObject("Example Checkbox", (80,360), (33,33), True)],
+            -91 : ["a", TextButtonPushVisualObject("Example Text Button", "Some Button", (20,475))],
+            
+
         }
         '''Control'''
         self.interacting = -999
@@ -51,7 +63,6 @@ class Interface:
 
     def mouseInSection(self, section):
         return SECTIONS_DATA[section][0][0] <= self.mx and self.mx <= SECTIONS_DATA[section][1][0] and SECTIONS_DATA[section][0][1] <= self.my and self.my <= SECTIONS_DATA[section][1][1]
-
 
     def tick(self,mx,my,mPressed,fps,keyQueue,mouseScroll):
         '''Entire Screen: `(0,0) to (1365,697)`: size `(1366,698)`'''
@@ -127,16 +138,37 @@ class Interface:
                 else:
                     self.ivos[self.previousInteracting][1].updateText(self.stringKeyQueue)
 
-    def processSketch(self, im):
-        '''Sketch Area: `(20,20) to (1043,677)`: size `(1024,658)`'''
+    def processExampleA(self, im):
+        '''Example A Area: `(  22,  22) to ( 671, 675)` : size `( 650, 654)`'''
         img = im.copy()
-        rmx = self.mx - 20
-        rmy = self.my - 20
+        rmx = self.mx - 22
+        rmy = self.my - 22
 
-        self.consoleAlerts.append(f"{time.time()} - processSketch() running")
-        
+        placeOver(img, displayText(f"FPS: {self.fps}", "m"), (20,20))
+        placeOver(img, displayText(f"Interacting With: {self.interacting}", "m"), (20,55))
+        placeOver(img, displayText(f"length of IVO: {len(self.ivos)}", "m"), (20,90))
+        placeOver(img, displayText(f"Mouse Pos: ({self.mx}, {self.my})", "m"), (200,20))
+        placeOver(img, displayText(f"Mouse Press: {self.mPressed}", "m", colorTXT=(100,255,100,255) if self.mPressed else (255,100,100,255)), (200,55))
+
         for id in self.ivos:
-            if self.ivos[id][0] == "s":
+            if self.ivos[id][0] == "a":
+                self.ivos[id][1].tick(img, self.interacting==id)
+
+        return img    
+    
+    def processExampleB(self, im):
+        '''Example B Area: `( 694,  22) to (1343, 675)` : size `( 650, 654)`'''
+        img = im.copy()
+        rmx = self.mx - 694
+        rmy = self.my - 22
+
+        choice = POINT_IDLE_ARRAY if random.random() > 0.5 else POINT_SELECTED_ARRAY
+        for i in range(25):
+            placeOver(img, choice, (math.cos((self.ticks/5+i/25))*250 + 325, math.sin((self.ticks/5+i/25))*250 + 327))
+            placeOver(img, choice, (math.cos((self.ticks/2+i/25))*100 + 325, math.sin((self.ticks/2+i/25))*100 + 327))
+
+        for id in self.ivos:
+            if self.ivos[id][0] == "b":
                 self.ivos[id][1].tick(img, self.interacting==id)
 
         return img    

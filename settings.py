@@ -57,17 +57,20 @@ VERSION = "v0.0.0"
 
 # Sections
 '''
-- Region Area: `(   #,   #) to (   #,   #)` : size `(   #,   #)`
+- Example A Area: `(  22,  22) to ( 671, 675)` : size `( 650, 654)`
+- Example B Area: `( 694,  22) to (1343, 675)` : size `( 650, 654)`
 
 Region ID : Top Left, Bottom Right, Size, Keep In Relative Top Left, Keep In Relative Top Right
 '''
 SECTIONS_DATA = {
     " ": [(   0,   0),(   0,   0),(   0,   0),(   0,   0),(   0,   0)],
-    "a": [(  20,  20),(1043, 677),(1024, 658),(   0,   0),(1024, 658)],
+    "a": [(  22,  22),( 671, 675),( 650, 654),(   0,   0),( 650, 654)],
+    "b": [( 694,  22),(1343, 675),( 650, 654),(   0,   0),( 650, 654)],
 }
 SECTIONS_FRAME_INSTRUCTIONS = {
     " ": [],
-    "a": genereateThemedBorderRectangleInstructions((1024, 658),hexColorToRGBA(FRAME_COLOR)),
+    "a": genereateThemedBorderRectangleInstructions(( 650, 654),hexColorToRGBA(FRAME_COLOR)),
+    "b": genereateThemedBorderRectangleInstructions(( 650, 654),hexColorToRGBA(FRAME_COLOR)),
 }
 SECTIONS = list(SECTIONS_DATA.keys())
 

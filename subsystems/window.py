@@ -37,7 +37,8 @@ class Window:
         self.interface = Interface()
 
         self.processFunctions = {
-            "a" : self.interface.processSketch
+            "a" : self.interface.processExampleA,
+            "b" : self.interface.processExampleB,
         }
         self.processFunctionsRegions = list(self.processFunctions.keys())
 

@@ -20,42 +20,47 @@ class Window:
         # self.window.maxsize(500,500)
         self.window.configure(background=BACKGROUND_COLOR)
         self.fps = 0
-        self.fpsCounter = 0
-        self.fpsGood = False
+        self.fpsTimestamps = []
         self.mPressed = False
         self.keysPressed = []
         self.mouseScroll = 0
 
         '''load test image'''
         testImage = ImageTk.PhotoImage(PLACEHOLDER_IMAGE)
-        self.w_tools  = LabelWrapper(self.window, ( 288, 179), (1057,  20), (1057,  20), BACKGROUND_COLOR, FRAME_SKETCH_INSTRUCTIONS)
-        self.b_tools  = self.w_tools .getBlank() 
+        self.labels = {}
+        self.blankLabels = {}
+        for section in SECTIONS:
+            self.labels[section] = LabelWrapper(self.window, SECTIONS_DATA[section][2], SECTIONS_DATA[section][0], SECTIONS_DATA[section][0], BACKGROUND_COLOR, SECTIONS_FRAME_INSTRUCTIONS[section])
+            self.blankLabels[section] = self.labels[section].getBlank() 
 
         '''start interface'''
         self.interface = Interface()
+
+        self.processFunctions = {
+            "a" : self.interface.processSketch
+        }
+        self.processFunctionsRegions = list(self.processFunctions.keys())
 
     def windowProcesses(self):
         '''window processes'''
         mx = self.window.winfo_pointerx()-self.window.winfo_rootx()
         my = self.window.winfo_pointery()-self.window.winfo_rooty()
-        if self.mPressed > 0:
-            self.mPressed += 1
-        else:
-            self.mPressed = 0
+        if self.mPressed > 0: self.mPressed += 1
+        else: self.mPressed = 0
 
         '''update screens'''
         self.interface.tick(mx,my,self.mPressed, self.fps, self.keysPressed, self.mouseScroll)
         self.mouseScroll = 0
         
-        self.w_tools .update(arrayToImage(self.interface.processSketch(self.b_tools )))
+        for region in self.processFunctionsRegions:
+            if self.labels[region].shown:
+                self.labels[region].update(arrayToImage(self.processFunctions[region](self.blankLabels[region])))
 
-        self.fpsCounter +=1
-        if math.floor(time.time()) == round(time.time()) and not(self.fpsGood):
-            self.fps = self.fpsCounter
-            self.fpsCounter = 0
-            self.fpsGood = True
-        if math.ceil(time.time()) == round(time.time()) and self.fpsGood:
-            self.fpsGood = False
+        now = time.time()
+        self.fpsTimestamps.append(now)
+        while now-self.fpsTimestamps[0] > 1:
+            self.fpsTimestamps.pop(0)
+        self.fps = len(self.fpsTimestamps)
 
         self.window.after(TICK_MS, self.windowProcesses)
 
@@ -92,7 +97,7 @@ class Window:
         self.window.bind("<KeyRelease>", self.keyReleased)
         self.window.bind_all("<MouseWheel>", self.mouseWheel)
 
-        self.window.after(TICK_MS, self.windowProcesses)
-        self.window.after(TICK_MS, self.windowOccasionalProcesses)
+        self.window.after(2, self.windowProcesses)
+        self.window.after(2, self.windowOccasionalProcesses)
+        self.window.after(1, self.windowStartupProcesses)
         self.window.mainloop()
-        self.window.after(0, self.windowStartupProcesses)

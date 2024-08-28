@@ -10,15 +10,15 @@ Here are the parts:
 '''
 
 '''Calculation'''
-FLOAT_ACCURACY = 3 #This is how many digits after the decimal point things will generally round to
+FLOAT_ACCURACY = 3 # The number of digits after the decimal point things will generally round to
 
 
 '''Visuals'''
-INTERFACE_FPS = 60 # The interface window will be called every 1/INTERFACE_FPS seconds
-TICK_MS = 1
-OCCASIONAL_TICK_MS = 5000 # Recommended to keep above 1 second, as it runs processes that do not need updates every tick
+INTERFACE_FPS = 60 # The desired operating FPS
+TICK_MS = 1 # Extra delay between frames, must be 1 or greater
+OCCASIONAL_TICK_MS = 5000 # Should keep above 1 second, as it runs processes that do not need updates every tick
 
-SHOW_CROSSHAIR = True # Shows a crosshair for the mouse's position
+SHOW_CROSSHAIR = False # Shows a crosshair for the mouse's position
 
 hexColorToRGBA = lambda hexcolor: tuple(int(hexcolor[i:i+2], 16) for i in (1, 3, 5)) + (255,)
 
@@ -41,8 +41,8 @@ FORMAT_TIME = lambda x: time.strftime("%I:%M:%S %p %m/%d/%Y", time.localtime(x))
 
 
 '''Keybinds'''
-KB_IGNORE    = ["Win_L"]                                                                                # Keys to ignore
-KB_EXAMPLE   = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("space" in keys)            # Example Keybind
+KB_IGNORE    = ["Win_L"]                                                                     # Keys to ignore
+KB_EXAMPLE   = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("space" in keys) # Example Keybind
 
 
 '''Constants - DO NOT CHANGE!!!'''
@@ -56,10 +56,18 @@ from subsystems.simplefancy import *
 VERSION = "v0.0.0"
 
 # Sections
-'''Region ID, Top Left, Bottom Right, Size, Keep In Relative Top Left, Keep In Relative Top Right'''
+'''
+- Region Area: `(   #,   #) to (   #,   #)` : size `(   #,   #)`
+
+Region ID : Top Left, Bottom Right, Size, Keep In Relative Top Left, Keep In Relative Top Right
+'''
 SECTIONS_DATA = {
     " ": [(   0,   0),(   0,   0),(   0,   0),(   0,   0),(   0,   0)],
     "a": [(  20,  20),(1043, 677),(1024, 658),(   0,   0),(1024, 658)],
+}
+SECTIONS_FRAME_INSTRUCTIONS = {
+    " ": [],
+    "a": genereateThemedBorderRectangleInstructions((1024, 658),hexColorToRGBA(FRAME_COLOR)),
 }
 SECTIONS = list(SECTIONS_DATA.keys())
 
@@ -90,19 +98,15 @@ FONT_SMALL_MEDIUM = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medi
 FONT_SMALL = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medium.ttf"), 10)
 EDITOR_SPACING = lambda x: x*20+15
 
-# Blank Interface Sections
-'''
-- Sketch Area:   `(  20,  20) to (1043, 677)` : size `(1024, 658)`
-'''
-
-FRAME_SKETCH_INSTRUCTIONS = genereateThemedBorderRectangleInstructions((1024, 658),hexColorToRGBA(FRAME_COLOR))
-
+# Cursors
 CURSOR_ARROW_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor_arrow.png"))
 CURSOR_SELECT_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor_select.png"))
 
+# Image Arrays
 ORB_IDLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "orb_idle.png"))
 ORB_SELECTED_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "orb_selected.png"))
 POINT_IDLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "point_idle.png"))
 POINT_SELECTED_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "point_selected.png"))
 
+# Icons
 ICON_CONSOLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "icon", "console.png"))

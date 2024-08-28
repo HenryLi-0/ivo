@@ -13,7 +13,7 @@ from subsystems.point import *
 from subsystems.bay import *
 
 class Interface:
-    def __init__(self, reset = True):
+    def __init__(self):
         self.mx = 0
         self.my = 0
         self.prevmx = 0
@@ -28,15 +28,14 @@ class Interface:
         Code:
         s - sketch
         '''
-        if reset:
-            self.ivos = {
-                -999 : [" ", DummyVisualObject("dummy", (0,0))], # used for not interacting with anything
-                -998 : [" ", DummyVisualObject("dummy", (0,0))], # used for text boxes
-                -997 : [" ", DummyVisualObject("dummy", (0,0))], # used by keybinds
-                -996 : [" ", DummyVisualObject("dummy", (0,0))], # used by scrolling
+        self.ivos = {
+            -999 : [" ", DummyVisualObject("dummy", (0,0))], # used for not interacting with anything
+            -998 : [" ", DummyVisualObject("dummy", (0,0))], # used for text boxes
+            -997 : [" ", DummyVisualObject("dummy", (0,0))], # used by keybinds
+            -996 : [" ", DummyVisualObject("dummy", (0,0))], # used by scrolling
 
-                -99 : ["t", IconVisualObject("Example", (0,0), ICON_CONSOLE_ARRAY, (33,33))],
-            }
+            -99 : ["t", IconVisualObject("Example", (0,0), ICON_CONSOLE_ARRAY, (33,33))],
+        }
         '''Control'''
         self.interacting = -999
         self.previousInteracting = -999
@@ -48,7 +47,6 @@ class Interface:
         '''Sliders'''
         self.sliders = []
         self.slidersData = []
-
         pass
 
     def mouseInSection(self, section):
@@ -97,7 +95,6 @@ class Interface:
                 print("scrolling!")
         else:
             if self.interacting == -996: self.interacting = -999
-
         pass
 
         '''Interacting With...'''

@@ -1,7 +1,7 @@
 '''This file contains functions related to fancy rendering'''
 
 from PIL import Image, ImageDraw
-import numpy, random, colorsys
+import numpy
 from settings import FONT_SMALL, FONT_SMALL_MEDIUM, FONT_MEDIUM, FONT_LARGE, BACKGROUND_COLOR, SELECTED_COLOR, FRAME_COLOR, hexColorToRGBA
 from subsystems.simplefancy import *
 

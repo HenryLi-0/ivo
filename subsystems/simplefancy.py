@@ -1,6 +1,6 @@
 '''This file contains functions related to fancy rendering, but does not import from setting'''
 
-from PIL import Image, ImageDraw
+from PIL import Image
 import numpy, random, colorsys
 
 def getArrayImageRGBAFromPath(path):

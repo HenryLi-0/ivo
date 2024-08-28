@@ -73,7 +73,7 @@ class FixedRegionPositionalBox:
 
 '''Visual Objects'''
 
-from settings import ORB_IDLE_ARRAY, ORB_SELECTED_ARRAY, CURSOR_SELECT_ARRAY
+from settings import ORB_IDLE_ARRAY, ORB_SELECTED_ARRAY
 
 class OrbVisualObject:
     '''A movable point.'''

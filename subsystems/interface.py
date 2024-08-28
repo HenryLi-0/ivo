@@ -29,7 +29,7 @@ class Interface:
         s - sketch
         '''
         if reset:
-            self.interactableVisualObjects = {
+            self.ivos = {
                 -999 : [" ", DummyVisualObject("dummy", (0,0))], # used for not interacting with anything
                 -998 : [" ", DummyVisualObject("dummy", (0,0))], # used for text boxes
                 -997 : [" ", DummyVisualObject("dummy", (0,0))], # used by keybinds
@@ -51,6 +51,10 @@ class Interface:
 
         pass
 
+    def mouseInSection(self, section):
+        return SECTIONS_DATA[section][0][0] <= self.mx and self.mx <= SECTIONS_DATA[section][1][0] and SECTIONS_DATA[section][0][1] <= self.my and self.my <= SECTIONS_DATA[section][1][1]
+
+
     def tick(self,mx,my,mPressed,fps,keyQueue,mouseScroll):
         '''Entire Screen: `(0,0) to (1365,697)`: size `(1366,698)`'''
         self.prevmx = self.mx
@@ -63,11 +67,7 @@ class Interface:
         self.deltaTicks = 1 if self.fps==0 else round(INTERFACE_FPS/self.fps)
         self.ticks += self.deltaTicks
         
-        self.mouseInPopUpSection  =  756 <= self.mx and self.mx <= 1043 and   20 <= self.my and self.my <=  198
-        self.mouseInSketchSection =   20 <= self.mx and self.mx <= 1043 and   20 <= self.my and self.my <=  677 and (not(self.mouseInPopUpSection))
-        self.mouseInToolsSection  = 1057 <= self.mx and self.mx <= 1344 and   20 <= self.my and self.my <=  198
-        self.mouseInColorsSection = 1057 <= self.mx and self.mx <= 1344 and  212 <= self.my and self.my <=  366
-        self.mouseInLayersSection = 1057 <= self.mx and self.mx <= 1344 and  380 <= self.my and self.my <=  677
+        self.mouseInPopUpSection = self.mouseInSection("a")
 
         '''Keyboard'''
         for key in keyQueue: 
@@ -105,58 +105,30 @@ class Interface:
         if not(self.mPressed):
             self.interacting = -999
         if self.interacting == -999 and self.mPressed and self.mRising:
-            for id in self.interactableVisualObjects:
-                if self.interactableVisualObjects[id][0] == "s":
-                    if self.interactableVisualObjects[id][1].getInteractable(self.mx - 20, self.my - 20):
-                        self.interacting = id
-                        break
-                if self.interactableVisualObjects[id][0] == "t":
-                    if self.interactableVisualObjects[id][1].getInteractable(self.mx - 1057, self.my - 20):
-                        self.interacting = id
-                        if self.interactableVisualObjects[id][1].type == "icon":
-                            self.selectedTool = id
-                        break
-                if self.interactableVisualObjects[id][0] == "c":
-                    if self.interactableVisualObjects[id][1].getInteractable(self.mx - 1057, self.my - 212):
-                        self.interacting = id
-                        break
-                if self.interactableVisualObjects[id][0] == "l":
-                    if self.interactableVisualObjects[id][1].getInteractable(self.mx - 1057, self.my - 380):
-                        self.interacting = id
-                        break
-                if self.interactableVisualObjects[id][0] == "p":
-                    if self.interactableVisualObjects[id][1].getInteractable(self.mx - 756, self.my - 20):
-                        self.interacting = id
-                        break
+            processed = False
+            for id in self.ivos:
+                for section in SECTIONS:
+                    if self.ivos[id][0] == section:
+                        if self.ivos[id][1].getInteractable(self.mx - SECTIONS_DATA[section][0][0], self.my - SECTIONS_DATA[section][0][1]):
+                            self.interacting = id
+                            processed = True
+                            break
+                if processed: break
         if self.interacting != -999:
-            section = self.interactableVisualObjects[self.interacting][0]
-            if section == "s": 
-                self.interactableVisualObjects[self.interacting][1].updatePos(self.mx - 20, self.my - 20)
-                self.interactableVisualObjects[self.interacting][1].keepInFrame(0,0,1024,658)
-            if section == "t": 
-                self.interactableVisualObjects[self.interacting][1].updatePos(self.mx - 1057, self.my - 20)
-                self.interactableVisualObjects[self.interacting][1].keepInFrame(0,0,288,179)
-            if section == "l": 
-                self.interactableVisualObjects[self.interacting][1].updatePos(self.mx - 1057, self.my - 380)
-                self.interactableVisualObjects[self.interacting][1].keepInFrame(0,0,288,298)
-            if section == "p": 
-                self.interactableVisualObjects[self.interacting][1].updatePos(self.mx - 756, self.my - 20)
-                self.interactableVisualObjects[self.interacting][1].keepInFrame(0,0,288,179)
-            if self.interactableVisualObjects[self.interacting][1].type == "movable color":
-                self.interactableVisualObjects[self.interacting][1].updatePos(self.mx - 1057, self.my - 212)
-                self.interactableVisualObjects[self.interacting][1].keepInFrame(62,20,225,120)
-
-        if ((self.mPressed)) and (self.previousInteracting == -999) and (self.interacting != -999) and (self.interactableVisualObjects[self.interacting][1].type  == "textbox"): 
-            self.stringKeyQueue = self.interactableVisualObjects[self.interacting][1].txt
-        if (self.interacting != -999) and (self.interactableVisualObjects[self.interacting][1].type  == "textbox"):
-            self.interactableVisualObjects[self.interacting][1].updateText(self.stringKeyQueue)
+            section = self.ivos[self.interacting][0]
+            self.ivos[self.interacting][1].updatePos(self.mx - SECTIONS_DATA[section][0][0], self.my - SECTIONS_DATA[section][0][1])
+            self.ivos[self.interacting][1].keepInFrame(SECTIONS_DATA[section][3][0],SECTIONS_DATA[section][3][1],SECTIONS_DATA[section][4][0],SECTIONS_DATA[section][4][1])
+        if (self.mPressed) and (self.previousInteracting == -999) and (self.interacting != -999) and (self.ivos[self.interacting][1].type  == "textbox"): 
+            self.stringKeyQueue = self.ivos[self.interacting][1].txt
+        if (self.interacting != -999) and (self.ivos[self.interacting][1].type  == "textbox"):
+            self.ivos[self.interacting][1].updateText(self.stringKeyQueue)
         if (self.previousInteracting != -999) and (self.previousInteracting != -998):
-            if (self.interactableVisualObjects[self.previousInteracting][1].type  == "textbox"):
+            if (self.ivos[self.previousInteracting][1].type  == "textbox"):
                 if not(self.interacting == -998):
                     self.interacting = self.previousInteracting
-                    self.interactableVisualObjects[self.interacting][1].updateText(self.stringKeyQueue)
+                    self.ivos[self.interacting][1].updateText(self.stringKeyQueue)
                 else:
-                    self.interactableVisualObjects[self.previousInteracting][1].updateText(self.stringKeyQueue)
+                    self.ivos[self.previousInteracting][1].updateText(self.stringKeyQueue)
 
     def processSketch(self, im):
         '''Sketch Area: `(20,20) to (1043,677)`: size `(1024,658)`'''
@@ -166,12 +138,11 @@ class Interface:
 
         self.consoleAlerts.append(f"{time.time()} - processSketch() running")
         
-        for id in self.interactableVisualObjects:
-            if self.interactableVisualObjects[id][0] == "s":
-                self.interactableVisualObjects[id][1].tick(img, self.interacting==id)
+        for id in self.ivos:
+            if self.ivos[id][0] == "s":
+                self.ivos[id][1].tick(img, self.interacting==id)
 
-        return img
-    
+        return img    
 
     def saveState(self):
         pass

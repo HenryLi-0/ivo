@@ -3,6 +3,10 @@
 from PIL import Image, ImageDraw
 import numpy, random, colorsys
 
+def getArrayImageRGBAFromPath(path):
+    '''Given a path, opens the image, converts it to RGBA, and returns it as a numpy array.'''
+    return numpy.array(Image.open(path).convert("RGBA"))
+
 def generateColorBox(size:list|tuple = (25,25),color:list|tuple = (255,255,255,255)):
     '''Generates a box of (size) size of (color) color'''
     array = numpy.empty((size[1], size[0], 4), dtype=numpy.uint8)

@@ -12,10 +12,11 @@ Here are the parts:
 '''Calculation'''
 FLOAT_ACCURACY = 3 #This is how many digits after the decimal point things will generally round to
 
+
 '''Visuals'''
 INTERFACE_FPS = 60 # The interface window will be called every 1/INTERFACE_FPS seconds
-TICK_MS = 1 #round((1/INTERFACE_FPS)*1000)
-OCCASIONAL_TICK_MS = 5000 # Highly recommended to keep above 1 second, as it runs processes that do not need updates every tick
+TICK_MS = 1
+OCCASIONAL_TICK_MS = 5000 # Recommended to keep above 1 second, as it runs processes that do not need updates every tick
 
 SHOW_CROSSHAIR = True # Shows a crosshair for the mouse's position
 
@@ -31,15 +32,19 @@ FRAME_COLOR_RGBA      = hexColorToRGBA(FRAME_COLOR     )
 SELECTED_COLOR_RGBA   = hexColorToRGBA(SELECTED_COLOR  )
 VOID_COLOR_RGBA       = hexColorToRGBA(VOID_COLOR      )
 
+
 '''Saving'''
 import os, time
 PATH_SAVE_DEFAULT = os.path.join("saves")
 
 FORMAT_TIME = lambda x: time.strftime("%I:%M:%S %p %m/%d/%Y", time.localtime(x))
 
+
 '''Keybinds'''
 KB_IGNORE    = ["Win_L"]                                                                                # Keys to ignore
 KB_EXAMPLE   = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("space" in keys)            # Example Keybind
+
+
 '''Constants - DO NOT CHANGE!!!'''
 '''Do not change these constants. Some are probably important. Some are used for testing purposes. 
    Editing certain constants will break things! You have been warned!'''
@@ -48,7 +53,15 @@ import numpy
 from subsystems.simplefancy import *
 
 # Version
-VERSION = "v1.0.0"
+VERSION = "v0.0.0"
+
+# Sections
+'''Region ID, Top Left, Bottom Right, Size, Keep In Relative Top Left, Keep In Relative Top Right'''
+SECTIONS_DATA = {
+    " ": [(   0,   0),(   0,   0),(   0,   0),(   0,   0),(   0,   0)],
+    "a": [(  20,  20),(1043, 677),(1024, 658),(   0,   0),(1024, 658)],
+}
+SECTIONS = list(SECTIONS_DATA.keys())
 
 # Imagery
 LOADING_IMAGE = Image.open(os.path.join("resources", "loading.png")).convert("RGBA") # 1366x697, Solid, Loading Screen
@@ -84,18 +97,12 @@ EDITOR_SPACING = lambda x: x*20+15
 
 FRAME_SKETCH_INSTRUCTIONS = genereateThemedBorderRectangleInstructions((1024, 658),hexColorToRGBA(FRAME_COLOR))
 
-CURSOR_ARROW = Image.open(os.path.join("resources", "cursor_arrow.png")).convert("RGBA")
-CURSOR_ARROW_ARRAY = numpy.array(CURSOR_ARROW)
-CURSOR_SELECT = Image.open(os.path.join("resources", "cursor_select.png")).convert("RGBA")
-CURSOR_SELECT_ARRAY = numpy.array(CURSOR_SELECT)
+CURSOR_ARROW_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor_arrow.png"))
+CURSOR_SELECT_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor_select.png"))
 
-ORB_IDLE = Image.open(os.path.join("resources", "orb_idle.png")).convert("RGBA")
-ORB_IDLE_ARRAY = numpy.array(ORB_IDLE)
-ORB_SELECTED = Image.open(os.path.join("resources", "orb_selected.png")).convert("RGBA")
-ORB_SELECTED_ARRAY = numpy.array(ORB_SELECTED)
-POINT_IDLE = Image.open(os.path.join("resources", "point_idle.png")).convert("RGBA")
-POINT_IDLE_ARRAY = numpy.array(POINT_IDLE)
-POINT_SELECTED = Image.open(os.path.join("resources", "point_selected.png")).convert("RGBA")
-POINT_SELECTED_ARRAY = numpy.array(POINT_SELECTED)
+ORB_IDLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "orb_idle.png"))
+ORB_SELECTED_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "orb_selected.png"))
+POINT_IDLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "point_idle.png"))
+POINT_SELECTED_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "point_selected.png"))
 
-ICON_CONSOLE_ARRAY = numpy.array(Image.open(os.path.join("resources", "icon", "console.png")).convert("RGBA"))
+ICON_CONSOLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "icon", "console.png"))

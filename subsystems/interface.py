@@ -45,8 +45,6 @@ class Interface:
             -93 : ["a", VerticalSliderVisualObject("Example Vertical Slider", (20,330), 100, [0,100])],
             -92 : ["a", CheckboxVisualObject("Example Checkbox", (80,360), (33,33), True)],
             -91 : ["a", TextButtonPushVisualObject("Example Text Button", "Some Button", (20,475))],
-            
-
         }
         '''Control'''
         self.interacting = -999

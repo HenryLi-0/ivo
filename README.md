@@ -14,4 +14,3 @@ First, make sure you have all the neccesary python modules installed to run this
 ### Modules Used (that dont come with python):
 - numpy
 - PIL (Pillow)
-- cv2 (openCV2)

@@ -75,7 +75,16 @@ class FixedRegionPositionalBox:
 
 from settings import ORB_IDLE_ARRAY, ORB_SELECTED_ARRAY
 
-class OrbVisualObject:
+class VisualObject:
+    '''Basic template for Visual Objects'''
+    def keepInFrame(self, minX, minY, maxX, maxY):
+        pos = self.positionO.getPosition()
+        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
+            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
+    def getInteractable(self, rmx, rmy):
+        return self.positionO.getInteract(rmx, rmy)
+
+class OrbVisualObject(VisualObject):
     '''A movable point.'''
     def __init__(self, name, pos:tuple|list = (random.randrange(0,903), random.randrange(0,507))):
         self.type = "orb"
@@ -87,14 +96,8 @@ class OrbVisualObject:
         placeOver(img, displayText(self.name, "s"), self.positionO.getPosition(), True)
     def updatePos(self, rmx, rmy):
         self.positionO.setPosition((rmx, rmy))
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
-    def getInteractable(self, rmx, rmy):
-        return self.positionO.getInteract(rmx, rmy)
 
-class ButtonVisualObject:
+class ButtonVisualObject(VisualObject):
     '''A button.'''
     def __init__(self, name, pos:tuple|list, img:numpy.ndarray, img2:numpy.ndarray):
         self.type = "button"
@@ -106,14 +109,9 @@ class ButtonVisualObject:
         placeOver(img, self.img2 if active else self.img, self.positionO.getPosition(), False)
     def updatePos(self, rmx, rmy):
         pass
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
-    def getInteractable(self,rmx,rmy):
-        return self.positionO.getInteract(rmx, rmy)
 
-class EditableTextBoxVisualObject:
+
+class EditableTextBoxVisualObject(VisualObject):
     '''An editable text box.'''
     def __init__(self, name, pos:tuple|list, startTxt= "", intOnly = False):
         self.type = "textbox"
@@ -147,14 +145,9 @@ class EditableTextBoxVisualObject:
             self.underlineActive = generateColorBox((self.positionO.getBBOX()[0],3), SELECTED_COLOR_RGBA)
     def updatePos(self, rmx, rmy):
         pass
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
-    def getInteractable(self,rmx,rmy):
-        return self.positionO.getInteract(rmx, rmy)
+
     
-class DummyVisualObject:
+class DummyVisualObject(VisualObject):
     '''I sit around doing nothing and can store data. A little better that one group member in randomly assigned class projects. That person didn't deserve that 100, did they now? (joke)'''
     def __init__(self, name, pos:tuple|list, data = None):
         self.type = "dummy"
@@ -170,7 +163,7 @@ class DummyVisualObject:
     def getInteractable(self,rmx,rmy):
         return False
 
-class IconVisualObject:
+class IconVisualObject(VisualObject):
     '''An icon, basically a fancy button.'''
     # generateIcon(img, active = False, size = (29,29), color = "")
     def __init__(self, name, pos:tuple|list, icon:numpy.ndarray, size:tuple|list = (29,29)):
@@ -184,14 +177,9 @@ class IconVisualObject:
         if active: placeOver(img, displayText(self.name, "s", (0,0,0,200)), self.positionO.getPosition(), False)
     def updatePos(self, rmx, rmy):
         pass
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
-    def getInteractable(self,rmx,rmy):
-        return self.positionO.getInteract(rmx, rmy)
+
     
-class ToggleVisualObject:
+class ToggleVisualObject(VisualObject):
     '''A toggle, basically a fancy button/icon, but this time with two faces, on and off that switch on rising detection of clicks!'''
     # generateIcon(img, active = False, size = (29,29), color = "")
     def __init__(self, name, pos:tuple|list, iconOn:numpy.ndarray, iconOff:numpy.ndarray, size:tuple|list = (29,29), runOn = lambda: 0, runOff = lambda: 0):
@@ -220,14 +208,9 @@ class ToggleVisualObject:
         self.runOff = runOff
     def updatePos(self, rmx, rmy):
         pass
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
-    def getInteractable(self,rmx,rmy):
-        return self.positionO.getInteract(rmx, rmy)
 
-class HorizontalSliderVisualObject:
+
+class HorizontalSliderVisualObject(VisualObject):
     '''A slider!!! No way!!! (horizontal)'''
     def __init__(self, name, pos:tuple|list=(random.randrange(0,20), random.randrange(0,20)), length = random.randrange(50,100), sliderRange = [1,100]):
         self.type = "slider"
@@ -261,7 +244,7 @@ class HorizontalSliderVisualObject:
     def getInteractable(self, rmx, rmy):
         return self.positionO.getInteract(rmx, rmy)
     
-class VerticalSliderVisualObject:
+class VerticalSliderVisualObject(VisualObject):
     '''A slider!!! No way!!! (vertical)'''
     def __init__(self, name, pos:tuple|list=(random.randrange(0,20), random.randrange(0,20)), length = random.randrange(50,100), sliderRange = [1,100]):
         self.type = "slider"
@@ -295,7 +278,7 @@ class VerticalSliderVisualObject:
     def getInteractable(self, rmx, rmy):
         return self.positionO.getInteract(rmx, rmy)
     
-class CheckboxVisualObject:
+class CheckboxVisualObject(VisualObject):
     '''A checkbox, basically a simple toggle.'''
     def __init__(self, name, pos:tuple|list, size:tuple|list = (29,29), state = False):
         self.type = "checkbox"
@@ -312,14 +295,9 @@ class CheckboxVisualObject:
         placeOver(img, self.img2 if self.state else self.img, self.positionO.getPosition(), False)
     def updatePos(self, rmx, rmy):
         pass
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
-    def getInteractable(self,rmx,rmy):
-        return self.positionO.getInteract(rmx, rmy)
+
     
-class TextButtonPushVisualObject:
+class TextButtonPushVisualObject(VisualObject):
     '''A button, but it has text! and it resets itself after some ticks!'''
     def __init__(self, name, text:numpy.ndarray, pos:tuple|list, time = 60):
         self.type = "button"
@@ -338,9 +316,3 @@ class TextButtonPushVisualObject:
         placeOver(img, self.img2 if self.state else self.img, self.positionO.getPosition(), False)
     def updatePos(self, rmx, rmy):
         pass
-    def keepInFrame(self, minX, minY, maxX, maxY):
-        pos = self.positionO.getPosition()
-        if pos[0] < minX or maxX < pos[0] or pos[1] < minY or maxY < pos[1]:
-            self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
-    def getInteractable(self,rmx,rmy):
-        return self.positionO.getInteract(rmx, rmy)

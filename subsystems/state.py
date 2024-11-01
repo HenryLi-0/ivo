@@ -39,11 +39,56 @@ class State:
         self.interacting = -999
         self.previousInteracting = -999
         self.mouseScroll = 0 
+        self.stringKeyQueue = ""
         self.consoleAlerts = []
         self.keybindLastUpdate = time.time()
         '''Sliders'''
         self.sliders = []
         self.slidersData = []
 
-    def createIVO(self):
-        self.ivos[self.c.c()]
+    def mouseInSection(self, section):
+        return SECTIONS_DATA[section][0][0] <= self.mx and self.mx <= SECTIONS_DATA[section][1][0] and SECTIONS_DATA[section][0][1] <= self.my and self.my <= SECTIONS_DATA[section][1][1]
+    
+    def tick(self,mx,my,mPressed,fps,keyQueue,mouseScroll):
+        '''Entire Screen: `(0,0) to (1365,697)`: size `(1366,698)`'''
+        self.prevmx = self.mx
+        self.prevmy = self.my
+        self.mx = mx if (0<=mx and mx<=1365) and (0<=my and my<=697) else self.mx 
+        self.my = my if (0<=mx and mx<=1365) and (0<=my and my<=697) else self.my
+        self.mPressed = mPressed > 0
+        self.mRising = mPressed==2
+        self.fps = fps
+        self.deltaTicks = 1 if self.fps==0 else round(INTERFACE_FPS/self.fps)
+        self.ticks += self.deltaTicks
+        
+        self.mouseInPopUpSection = self.mouseInSection("a")
+
+        '''Keyboard'''
+        for key in keyQueue: 
+            if not key in self.previousKeyQueue:
+                if key in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789":
+                    self.stringKeyQueue+=key
+                else:
+                    if key=="space":
+                        self.stringKeyQueue+=" "
+                    if key=="BackSpace":
+                        if len(self.stringKeyQueue) > 0:
+                            self.stringKeyQueue=self.stringKeyQueue[0:-1]
+                    if key=="Return" or key=="Control_L":
+                        self.interacting = -998
+                        break
+        self.previousKeyQueue = keyQueue.copy()
+        if (self.interacting == -999 or self.interacting == -997) and (time.time() - self.keybindLastUpdate > 0.2):
+            if KB_EXAMPLE(keyQueue):
+                '''EXAMPLE KEYBIND: CTRL + SPACE'''
+                print("example keybind")
+
+        '''Mouse Scroll'''
+        self.mouseScroll = mouseScroll
+        if abs(self.mouseScroll) > 0:
+            if self.interacting == -999: self.interacting = -996
+            if self.interacting == -996:
+                print("scrolling!")
+        else:
+            if self.interacting == -996: self.interacting = -999
+        pass

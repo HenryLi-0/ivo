@@ -19,11 +19,40 @@ from subsystems.section.exampleB import SectionExampleB
 class Interface:
     def __init__(self):
         self.s = State()
-        self.previousKeyQueue = []
 
     def tick(self,mx,my,mPressed,fps,keyQueue,mouseScroll):
         '''Entire Screen: `(0,0) to (1365,697)`: size `(1366,698)`'''
         self.s.tick(mx,my,mPressed,fps,keyQueue,mouseScroll)
+
+        '''Keyboard'''
+        for key in keyQueue: 
+            if not key in self.s.previousKeyQueue:
+                if key in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789":
+                    self.s.stringKeyQueue+=key
+                else:
+                    if key=="space":
+                        self.s.stringKeyQueue+=" "
+                    if key=="BackSpace":
+                        if len(self.s.stringKeyQueue) > 0:
+                            self.s.stringKeyQueue=self.s.stringKeyQueue[0:-1]
+                    if key=="Return" or key=="Control_L":
+                        self.s.interacting = -998
+                        break
+        self.s.previousKeyQueue = keyQueue.copy()
+        if (self.s.interacting == -999 or self.s.interacting == -997) and (time.time() - self.s.keybindLastUpdate > 0.2):
+            if KB_EXAMPLE(keyQueue):
+                '''EXAMPLE KEYBIND: CTRL + SPACE'''
+                print("example keybind")
+
+        '''Mouse Scroll'''
+        self.s.mouseScroll = mouseScroll
+        if abs(self.s.mouseScroll) > 0:
+            if self.s.interacting == -999: self.s.interacting = -996
+            if self.s.interacting == -996:
+                print("scrolling!")
+        else:
+            if self.s.interacting == -996: self.s.interacting = -999
+        pass
 
         '''Interacting With...'''
         self.s.previousInteracting = self.s.interacting

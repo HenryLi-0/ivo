@@ -158,7 +158,7 @@ class DummyVisualObject(VisualObject):
         pass
     def updatePos(self, rmx, rmy):
         pass
-    def keepInFrame(self, maxX, maxY):
+    def keepInFrame(self, minX, minY, maxX, maxY):
         pass
     def getInteractable(self,rmx,rmy):
         return False

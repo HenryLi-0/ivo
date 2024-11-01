@@ -40,6 +40,7 @@ class State:
         self.previousInteracting = -999
         self.mouseScroll = 0 
         self.stringKeyQueue = ""
+        self.previousKeyQueue = []
         self.consoleAlerts = []
         self.keybindLastUpdate = time.time()
         '''Sliders'''
@@ -62,33 +63,3 @@ class State:
         self.ticks += self.deltaTicks
         
         self.mouseInPopUpSection = self.mouseInSection("a")
-
-        '''Keyboard'''
-        for key in keyQueue: 
-            if not key in self.previousKeyQueue:
-                if key in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789":
-                    self.stringKeyQueue+=key
-                else:
-                    if key=="space":
-                        self.stringKeyQueue+=" "
-                    if key=="BackSpace":
-                        if len(self.stringKeyQueue) > 0:
-                            self.stringKeyQueue=self.stringKeyQueue[0:-1]
-                    if key=="Return" or key=="Control_L":
-                        self.interacting = -998
-                        break
-        self.previousKeyQueue = keyQueue.copy()
-        if (self.interacting == -999 or self.interacting == -997) and (time.time() - self.keybindLastUpdate > 0.2):
-            if KB_EXAMPLE(keyQueue):
-                '''EXAMPLE KEYBIND: CTRL + SPACE'''
-                print("example keybind")
-
-        '''Mouse Scroll'''
-        self.mouseScroll = mouseScroll
-        if abs(self.mouseScroll) > 0:
-            if self.interacting == -999: self.interacting = -996
-            if self.interacting == -996:
-                print("scrolling!")
-        else:
-            if self.interacting == -996: self.interacting = -999
-        pass

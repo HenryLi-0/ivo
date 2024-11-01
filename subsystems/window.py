@@ -31,7 +31,7 @@ class Window:
         self.blankLabels = {}
         for section in SECTIONS:
             self.labels[section] = LabelWrapper(self.window, SECTIONS_DATA[section][2], SECTIONS_DATA[section][0], SECTIONS_DATA[section][0], BACKGROUND_COLOR, SECTIONS_FRAME_INSTRUCTIONS[section])
-            self.blankLabels[section] = self.labels[section].getBlank() 
+            self.blankLabels[section] = self.labels[section].getBlank()
 
         '''start interface'''
         self.interface = Interface()
@@ -68,7 +68,7 @@ class Window:
     def windowOccasionalProcesses(self):
         '''window processes that happen less frequently (once every 5 seconds)'''
         print("windowOccaionalProcess")
-        self.window.title(f"Interactable Visual Objects {self.interface.ticks}")
+        self.window.title(f"Interactable Visual Objects {self.interface.s.ticks}")
         print(self.getFPS())
         self.window.after(OCCASIONAL_TICK_MS, self.windowOccasionalProcesses)
 

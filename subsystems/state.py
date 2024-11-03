@@ -43,6 +43,7 @@ class State:
         self.previousKeyQueue = []
         self.consoleAlerts = []
         self.keybindLastUpdate = time.time()
+        self.currentKeybind = [False, None]
         '''Sliders'''
         self.sliders = []
         self.slidersData = []

@@ -24,6 +24,8 @@ class Interface:
         '''Entire Screen: `(0,0) to (1365,697)`: size `(1366,698)`'''
         self.s.tick(mx,my,mPressed,fps,keyQueue,mouseScroll)
 
+        interacting = self.s.interacting
+
         '''Keyboard'''
         for key in keyQueue: 
             if not key in self.s.previousKeyQueue:
@@ -36,53 +38,68 @@ class Interface:
                         if len(self.s.stringKeyQueue) > 0:
                             self.s.stringKeyQueue=self.s.stringKeyQueue[0:-1]
                     if key=="Return" or key=="Control_L":
-                        self.s.interacting = -998
+                        interacting = -998
                         break
         self.s.previousKeyQueue = keyQueue.copy()
-        if (self.s.interacting == -999 or self.s.interacting == -997) and (time.time() - self.s.keybindLastUpdate > 0.2):
+
+        keybind = None
+        if (interacting == -999 or interacting == -997) and (time.time() - self.s.keybindLastUpdate > 0.2):
             if KB_EXAMPLE(keyQueue):
                 '''EXAMPLE KEYBIND: CTRL + SPACE'''
                 print("example keybind")
+                keybind = "example"
+
+        if self.s.currentKeybind[1] != keybind and keybind != None:
+            keybind = [True, keybind]
+        else:
+            keybind = [False, keybind]
+        self.s.currentKeybind = keybind
+        
+        print(keybind)
 
         '''Mouse Scroll'''
         self.s.mouseScroll = mouseScroll
         if abs(self.s.mouseScroll) > 0:
-            if self.s.interacting == -999: self.s.interacting = -996
-            if self.s.interacting == -996:
+            if interacting == -999: interacting = -996
+            if interacting == -996:
                 print("scrolling!")
         else:
-            if self.s.interacting == -996: self.s.interacting = -999
+            if interacting == -996: interacting = -999
         pass
 
         '''Interacting With...'''
-        self.s.previousInteracting = self.s.interacting
+        self.s.previousInteracting = interacting
+        previousInteracting = self.s.previousInteracting
         if not(self.s.mPressed):
-            self.s.interacting = -999
-        if self.s.interacting == -999 and self.s.mPressed and self.s.mRising:
+            interacting = -999
+        if interacting == -999 and self.s.mPressed and self.s.mRising:
             processed = False
             for id in self.s.ivos:
                 for section in SECTIONS:
                     if self.s.ivos[id][0] == section:
                         if self.s.ivos[id][1].getInteractable(self.s.mx - SECTIONS_DATA[section][0][0], self.s.my - SECTIONS_DATA[section][0][1]):
-                            self.s.interacting = id
+                            interacting = id
                             processed = True
                             break
                 if processed: break
-        if self.s.interacting != -999:
-            section = self.s.ivos[self.s.interacting][0]
-            self.s.ivos[self.s.interacting][1].updatePos(self.s.mx - SECTIONS_DATA[section][0][0], self.s.my - SECTIONS_DATA[section][0][1])
-            self.s.ivos[self.s.interacting][1].keepInFrame(SECTIONS_DATA[section][3][0],SECTIONS_DATA[section][3][1],SECTIONS_DATA[section][4][0],SECTIONS_DATA[section][4][1])
-        if (self.s.mPressed) and (self.s.previousInteracting == -999) and (self.s.interacting != -999) and (self.s.ivos[self.s.interacting][1].type  == "textbox"): 
-            self.s.stringKeyQueue = self.s.ivos[self.s.interacting][1].txt
-        if (self.s.interacting != -999) and (self.s.ivos[self.s.interacting][1].type  == "textbox"):
-            self.s.ivos[self.s.interacting][1].updateText(self.s.stringKeyQueue)
-        if (self.s.previousInteracting != -999) and (self.s.previousInteracting != -998):
-            if (self.s.ivos[self.s.previousInteracting][1].type  == "textbox"):
-                if not(self.s.interacting == -998):
-                    self.s.interacting = self.s.previousInteracting
-                    self.s.ivos[self.s.interacting][1].updateText(self.s.stringKeyQueue)
+        if interacting != -999:
+            section = self.s.ivos[interacting][0]
+            self.s.ivos[interacting][1].updatePos(self.s.mx - SECTIONS_DATA[section][0][0], self.s.my - SECTIONS_DATA[section][0][1])
+            self.s.ivos[interacting][1].keepInFrame(SECTIONS_DATA[section][3][0],SECTIONS_DATA[section][3][1],SECTIONS_DATA[section][4][0],SECTIONS_DATA[section][4][1])
+        if (self.s.mPressed) and (previousInteracting == -999) and (interacting != -999) and (self.s.ivos[interacting][1].type  == "textbox"): 
+            self.s.stringKeyQueue = self.s.ivos[interacting][1].txt
+        if (interacting != -999) and (self.s.ivos[interacting][1].type  == "textbox"):
+            self.s.ivos[interacting][1].updateText(self.s.stringKeyQueue)
+        if (previousInteracting != -999) and (previousInteracting != -998):
+            if (self.s.ivos[previousInteracting][1].type  == "textbox"):
+                if not(interacting == -998):
+                    interacting = previousInteracting
+                    self.s.ivos[interacting][1].updateText(self.s.stringKeyQueue)
                 else:
-                    self.s.ivos[self.s.previousInteracting][1].updateText(self.s.stringKeyQueue)
+                    self.s.ivos[previousInteracting][1].updateText(self.s.stringKeyQueue)
+
+        self.s.interacting = interacting
+        self.s.previousInteracting = previousInteracting
 
     def processExampleA(self, im):
         return SectionExampleA.render(self.s, im)

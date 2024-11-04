@@ -42,6 +42,9 @@ class Window:
         }
         self.processFunctionsRegions = list(self.processFunctions.keys())
 
+        self.totalframes = 0
+        self.framesdone = 0
+
     def windowProcesses(self):
         '''window processes'''
         mx = self.window.winfo_pointerx()-self.window.winfo_rootx()
@@ -53,9 +56,16 @@ class Window:
         self.interface.tick(mx,my,self.mPressed, self.fps, self.keysPressed, self.mouseScroll)
         self.mouseScroll = 0
         
+        temp1 = time.time()
         for region in self.processFunctionsRegions:
             if self.labels[region].shown:
                 self.labels[region].update(arrayToImage(self.processFunctions[region](self.blankLabels[region])))
+        temp2 = time.time()
+
+        self.totalframes += (temp2-temp1)
+        self.framesdone += 1
+
+        print(f"avg of {self.framesdone} frames: {self.totalframes/self.framesdone} seconds")
 
         now = time.time()
         self.fpsTimestamps.append(now)

@@ -73,7 +73,7 @@ class FixedRegionPositionalBox:
 
 '''Visual Objects'''
 
-from settings import ORB_IDLE_ARRAY, ORB_SELECTED_ARRAY
+from settings import ORB_IDLE, ORB_SELECTED
 
 class VisualObject:
     '''Basic template for Visual Objects'''
@@ -92,19 +92,19 @@ class OrbVisualObject(VisualObject):
         self.positionO = CircularPositionalBox(50)
         self.positionO.setPosition(pos)
     def tick(self, img, active):
-        placeOver(img, ORB_SELECTED_ARRAY if active else ORB_IDLE_ARRAY, self.positionO.getPosition(), True)
+        placeOver(img, ORB_SELECTED if active else ORB_IDLE, self.positionO.getPosition(), True)
         placeOver(img, displayText(self.name, "s"), self.positionO.getPosition(), True)
     def updatePos(self, rmx, rmy):
         self.positionO.setPosition((rmx, rmy))
 
 class ButtonVisualObject(VisualObject):
     '''A button.'''
-    def __init__(self, name, pos:tuple|list, img:numpy.ndarray, img2:numpy.ndarray):
+    def __init__(self, name, pos:tuple|list, img:Image, img2:Image):
         self.type = "button"
         self.name = name
         self.img = img
         self.img2 = img2
-        self.positionO = RectangularPositionalBox((img.shape[1],img.shape[0]), pos[0], pos[1])
+        self.positionO = RectangularPositionalBox((img.width,img.height), pos[0], pos[1])
     def tick(self, img, active):
         placeOver(img, self.img2 if active else self.img, self.positionO.getPosition(), False)
     def updatePos(self, rmx, rmy):
@@ -119,7 +119,7 @@ class EditableTextBoxVisualObject(VisualObject):
         self.txt = str(startTxt)
         self.txtImg = displayText(self.txt, "m")
         self.intOnly = intOnly
-        self.positionO = RectangularPositionalBox((max(self.txtImg.shape[1],10),max(self.txtImg.shape[0],23)), pos[0], pos[1])
+        self.positionO = RectangularPositionalBox((max(self.txtImg.width,10),max(self.txtImg.height,23)), pos[0], pos[1])
         self.underlineIdle = generateColorBox((self.positionO.getBBOX()[0],3), FRAME_COLOR_RGBA)
         self.underlineActive = generateColorBox((self.positionO.getBBOX()[0],3), SELECTED_COLOR_RGBA)
     def tick(self, img, active):
@@ -140,7 +140,7 @@ class EditableTextBoxVisualObject(VisualObject):
                             while item in temp: temp.remove(item)
                         self.txt = "".join(temp)
             self.txtImg = displayText(self.txt, "m")
-            self.positionO.setBBOX((max(self.txtImg.shape[1]+3,10),max(self.txtImg.shape[0],23)))
+            self.positionO.setBBOX((max(self.txtImg.width+3,10),max(self.txtImg.height,23)))
             self.underlineIdle = generateColorBox((self.positionO.getBBOX()[0],3), FRAME_COLOR_RGBA)
             self.underlineActive = generateColorBox((self.positionO.getBBOX()[0],3), SELECTED_COLOR_RGBA)
     def updatePos(self, rmx, rmy):
@@ -166,12 +166,12 @@ class DummyVisualObject(VisualObject):
 class IconVisualObject(VisualObject):
     '''An icon, basically a fancy button.'''
     # generateIcon(img, active = False, size = (29,29), color = "")
-    def __init__(self, name, pos:tuple|list, icon:numpy.ndarray, size:tuple|list = (29,29)):
+    def __init__(self, name, pos:tuple|list, icon:Image, size:tuple|list = (29,29)):
         self.type = "icon"
         self.name = name
         self.img = generateIcon(icon, False, size)
         self.img2 = generateIcon(icon, True, size)
-        self.positionO = RectangularPositionalBox((self.img.shape[1],self.img.shape[0]), pos[0], pos[1])
+        self.positionO = RectangularPositionalBox((self.img.width,self.img.height), pos[0], pos[1])
     def tick(self, img, active):
         placeOver(img, self.img2 if active else self.img, self.positionO.getPosition(), False)
         if active: placeOver(img, displayText(self.name, "s", (0,0,0,200)), self.positionO.getPosition(), False)
@@ -182,12 +182,12 @@ class IconVisualObject(VisualObject):
 class ToggleVisualObject(VisualObject):
     '''A toggle, basically a fancy button/icon, but this time with two faces, on and off that switch on rising detection of clicks!'''
     # generateIcon(img, active = False, size = (29,29), color = "")
-    def __init__(self, name, pos:tuple|list, iconOn:numpy.ndarray, iconOff:numpy.ndarray, size:tuple|list = (29,29), runOn = lambda: 0, runOff = lambda: 0):
+    def __init__(self, name, pos:tuple|list, iconOn:Image, iconOff:Image, size:tuple|list = (29,29), runOn = lambda: 0, runOff = lambda: 0):
         self.type = "icon"
         self.name = name
         self.img = generateIcon(iconOn, False, size)
         self.img2 = generateIcon(iconOff, False, size)
-        self.positionO = RectangularPositionalBox((self.img.shape[1],self.img.shape[0]), pos[0], pos[1])
+        self.positionO = RectangularPositionalBox((self.img.width,self.img.height), pos[0], pos[1])
         self.active = 0
         self.state = False
         self.runOn = runOn
@@ -228,7 +228,7 @@ class HorizontalSliderVisualObject(VisualObject):
         self.updatePos(-9999999, 0)
     def tick(self, img, active):
         placeOver(img, self.bar, self.originalPos)
-        placeOver(img, POINT_SELECTED_ARRAY if active else POINT_IDLE_ARRAY, self.positionO.getPosition(), True)
+        placeOver(img, POINT_SELECTED if active else POINT_IDLE, self.positionO.getPosition(), True)
         if active: 
             placeOver(img, displayText(str(round((self.positionO.getX()-self.originalPos[0])/self.length*self.displayScalar+self.sliderRange[0])), "s", (0,0,0,150), (255,255,255,255)), addP(self.positionO.getPosition(), (0,25)), True)
     def getData(self):
@@ -262,7 +262,7 @@ class VerticalSliderVisualObject(VisualObject):
         self.updatePos(0, -9999999)
     def tick(self, img, active):
         placeOver(img, self.bar, self.originalPos)
-        placeOver(img, POINT_SELECTED_ARRAY if active else POINT_IDLE_ARRAY, self.positionO.getPosition(), True)
+        placeOver(img, POINT_SELECTED if active else POINT_IDLE, self.positionO.getPosition(), True)
         if active: 
             placeOver(img, displayText(str(round((self.positionO.getY()-self.originalPos[1])/self.length*self.displayScalar+self.sliderRange[0])), "s", (0,0,0,150), (255,255,255,255)), addP(self.positionO.getPosition(), (0,25)), True)
     def getData(self):
@@ -285,7 +285,7 @@ class CheckboxVisualObject(VisualObject):
         self.name = name
         self.img = generateIcon(generateColorBox(size, (255,0,0,255)), False, size)
         self.img2 = generateIcon(generateColorBox(size, (0,255,0,255)), False, size)
-        self.positionO = RectangularPositionalBox((self.img.shape[1],self.img.shape[0]), pos[0], pos[1])
+        self.positionO = RectangularPositionalBox((self.img.width,self.img.height), pos[0], pos[1])
         self.active = 0
         self.state = state
     def tick(self, img, active):
@@ -299,13 +299,13 @@ class CheckboxVisualObject(VisualObject):
     
 class TextButtonPushVisualObject(VisualObject):
     '''A button, but it has text! and it resets itself after some ticks!'''
-    def __init__(self, name, text:numpy.ndarray, pos:tuple|list, time = 60):
+    def __init__(self, name, text:Image, pos:tuple|list, time = 60):
         self.type = "button"
         self.name = name
         temp = displayText(str(text), "m")
-        self.img = generateIcon(temp, False, (temp.shape[1],temp.shape[0]))
-        self.img2 = generateIcon(temp, True, (temp.shape[1],temp.shape[0]))
-        self.positionO = RectangularPositionalBox((self.img.shape[1],self.img.shape[0]), pos[0], pos[1])
+        self.img = generateIcon(temp, False, (temp.width, temp.height))
+        self.img2 = generateIcon(temp, True, (temp.width,temp.height))
+        self.positionO = RectangularPositionalBox((self.img.width,self.img.height), pos[0], pos[1])
         self.lastPressed = 9999999
         self.state = False
         self.time = time

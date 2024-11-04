@@ -106,10 +106,10 @@ CURSOR_ARROW_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor
 CURSOR_SELECT_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor_select.png"))
 
 # Image Arrays
-ORB_IDLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "orb_idle.png"))
-ORB_SELECTED_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "orb_selected.png"))
-POINT_IDLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "point_idle.png"))
-POINT_SELECTED_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "point_selected.png"))
+ORB_IDLE = getImageRGBAFromPath(os.path.join("resources", "orb_idle.png"))
+ORB_SELECTED = getImageRGBAFromPath(os.path.join("resources", "orb_selected.png"))
+POINT_IDLE = getImageRGBAFromPath(os.path.join("resources", "point_idle.png"))
+POINT_SELECTED = getImageRGBAFromPath(os.path.join("resources", "point_selected.png"))
 
 # Icons
-ICON_CONSOLE_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "icon", "console.png"))
+ICON_CONSOLE = getImageRGBAFromPath(os.path.join("resources", "icon", "console.png"))

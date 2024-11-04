@@ -88,7 +88,7 @@ def merge(img1:Image.Image|numpy.ndarray, img2:Image.Image|numpy.ndarray):
     img2 = numpy.array(img2)
     return img1 // 2 + img2 // 2
 
-def placeOver(img1:numpy.ndarray, img2:numpy.ndarray, position:list|tuple, center = False):
+def arrayPlaceOver(img1:numpy.ndarray, img2:numpy.ndarray, position:list|tuple, center = False):
     '''Modifies image 1 (background) as an array of image 2 (overlay) placed on top of image 1 (background), given as numpy arrays'''
     if center: position = (round(position[0]-img2.shape[1]*0.5),round(position[1]-img2.shape[0]*0.5))
     img1H, img1W = img1.shape[:2] 
@@ -120,10 +120,10 @@ def placeOver(img1:numpy.ndarray, img2:numpy.ndarray, position:list|tuple, cente
         blendedRGB = (overlayRGB*alpha_overlay[:, :, None]+backgroundRGB*(1-alpha_overlay[:, :, None])).astype(numpy.uint8)    
         img1[startY:endY, startX:endX, :3] = blendedRGB
         img1[startY:endY, startX:endX, 3] = (combined_alpha * 255).astype(numpy.uint8)
-    
+
     return True
 
-def dPlaceOver(img1:numpy.ndarray, img2: numpy.ndarray, position:list|tuple):
+def dArrayPlaceOver(img1:numpy.ndarray, img2: numpy.ndarray, position:list|tuple):
     '''Dangerously returns an overlayed version of image 1 (background) as an array of image 2 (overlay) placed on top of image 1 (background), given as numpy arrays, by directly adding it'''
     if img1.shape == img2.shape: img1 += img2
     else:
@@ -136,6 +136,23 @@ def dPlaceOver(img1:numpy.ndarray, img2: numpy.ndarray, position:list|tuple):
         except:
             '''So, you really messed up... told you it was dangerous...'''
             pass
+
+def neoPlaceOver(img1: Image, img2: Image, position:list|tuple, center = False):
+    '''Modifies image 1 (background) as an array of image 2 (overlay) placed on top of image 1 (background), given as PIL images'''
+    if center: X, Y = (position[0] - round(img2.width/2), position[1] - round(img2.height/2))
+    else: X, Y = position
+    if (X < img1.width) and (Y < img1.height) and (X + img2.width > 0) and (Y + img2.height > 0):
+        if (X < 0) or (Y < 0) or (X + img2.width > img1.width) or (Y + img2.height > img1.height):
+            crop = img2.crop((
+                max(0, X) - X,
+                max(0, Y) - Y,
+                min(X + img2.width, img1.width) - X,
+                min(Y + img2.height, img1.height) - Y
+            ))
+            img1.paste(crop, (X, Y), crop)
+        else:
+            img1.paste(img2, (X, Y), img2)
+    return True
 
 def rotateDeg(img: numpy.ndarray, degrees:float):
     '''Returns an array of a rotated version of the given image by (degrees) degrees, using the 0 up CCW rotation system'''

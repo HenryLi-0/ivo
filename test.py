@@ -61,7 +61,8 @@ print(f"placeOver avg: {total/n}")
 
 def neoPlaceOver(img1: Image, img2: Image, position:list|tuple, center = False):
     '''Modifies image 1 (background) as an array of image 2 (overlay) placed on top of image 1 (background), given as PIL images'''
-    X, Y = position
+    if center: X, Y = (position[0] - round(img2.width/2), position[1] - round(img2.height/2))
+    else: X, Y = position
     if (X < img1.width) and (Y < img1.height) and (X + img2.width > 0) and (Y + img2.height > 0):
         if (X < 0) or (Y < 0) or (X + img2.width > img1.width) or (Y + img2.height > img1.height):
             crop = img2.crop((
@@ -70,9 +71,9 @@ def neoPlaceOver(img1: Image, img2: Image, position:list|tuple, center = False):
                 min(X + img2.width, img1.width) - X,
                 min(Y + img2.height, img1.height) - Y
             ))
-            img1.paste(crop, position, crop)
+            img1.paste(crop, (X, Y), crop)
         else:
-            img1.paste(img2, position, img2)
+            img1.paste(img2, (X, Y), img2)
     return True
 
 total = 0
@@ -86,3 +87,9 @@ for location in TEST_POSITIONS:
 print(f"neoPlaceOver avg: {total/n}")
 
 
+# temp1 = BACKGROUND.copy()
+# temp2 = TRANSPARENT.copy()
+
+# neoPlaceOver(temp1, temp2, (512,512), True)
+
+# temp1.show()

@@ -11,5 +11,6 @@ window.start()
 '''
 original:
 avg of 1095 frames: 0.03700961282808487 seconds
-
+new:
+avg of 1095 frames: 0.0294141542965963 seconds
 '''

@@ -2,19 +2,24 @@
 
 from PIL import Image
 import numpy, random, colorsys
+from subsystems.render import arrayToImage
 
 def getArrayImageRGBAFromPath(path):
     '''Given a path, opens the image, converts it to RGBA, and returns it as a numpy array.'''
     return numpy.array(Image.open(path).convert("RGBA"))
 
+def getImageRGBAFromPath(path):
+    '''Given a path, opens the image, converts it to RGBA, and returns the Image.'''
+    return Image.open(path).convert("RGBA")
+
 def generateColorBox(size:list|tuple = (25,25),color:list|tuple = (255,255,255,255)):
     '''Generates a box of (size) size of (color) color'''
     array = numpy.empty((size[1], size[0], 4), dtype=numpy.uint8)
     array[:, :] = color
-    return array
+    return arrayToImage(array)
 
 def generateUnrestrictedColorBox(size:list|tuple = (25,25),color:list|tuple = (255,255,255,255)):
-    '''Generates a box of (size) size of (color) color without restrictions'''
+    '''Generates an array box of (size) size of (color) color without restrictions'''
     array = numpy.empty((size[1], size[0], 4))
     array[:, :] = color
     return array
@@ -26,7 +31,7 @@ def generateBorderBox(size:list|tuple = (25,25), outlineW:int = 1, color:list|tu
     array[-outlineW:, :, :] = color
     array[:, :outlineW, :] = color
     array[:, -outlineW:, :] = color
-    return array
+    return arrayToImage(array)
 
 def generateInwardsBorderBox(size:list|tuple = (25,25), outlineW:int = 1, color:list|tuple = (255,255,255,255)):
     '''Generates a inwards bordered box with a transparent inside, with transparent space of (size - outline), and an (outlineW) px thick outline of (color) color surrounding it'''
@@ -35,7 +40,7 @@ def generateInwardsBorderBox(size:list|tuple = (25,25), outlineW:int = 1, color:
     array[-outlineW:, :, :] = color
     array[:, :outlineW, :] = color
     array[:, -outlineW:, :] = color
-    return array
+    return arrayToImage(array)
 
 def generatePastelDark():
     '''Randomly generates a dark pastel color'''

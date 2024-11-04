@@ -26,10 +26,10 @@ class State:
 
             # Example Usage
             -99 : ["a", OrbVisualObject("example", (145,165))],
-            -98 : ["a", ButtonVisualObject("Example Button", (200,150), PLACEHOLDER_IMAGE_5_ARRAY, PLACEHOLDER_IMAGE_3_ARRAY)],
+            -98 : ["a", ButtonVisualObject("Example Button", (200,150), PLACEHOLDER_IMAGE_5, PLACEHOLDER_IMAGE_3)],
             -97 : ["a", EditableTextBoxVisualObject("Example Textbox", (20,150), "Textbox", False)],
-            -96 : ["a", IconVisualObject("Example Icon", (20,195), ICON_CONSOLE_ARRAY, (33,33))],
-            -95 : ["a", ToggleVisualObject("Example Toggle", (20,245), ICON_CONSOLE_ARRAY, ICON_CONSOLE_ARRAY, (33,33), lambda: print("on"), lambda: print("off"))],
+            -96 : ["a", IconVisualObject("Example Icon", (20,195), ICON_CONSOLE, (33,33))],
+            -95 : ["a", ToggleVisualObject("Example Toggle", (20,245), ICON_CONSOLE, ICON_CONSOLE, (33,33), lambda: print("on"), lambda: print("off"))],
             -94 : ["a", HorizontalSliderVisualObject("Example Horizontal Slider", (50,300), 100, [0,100])],
             -93 : ["a", VerticalSliderVisualObject("Example Vertical Slider", (20,330), 100, [0,100])],
             -92 : ["a", CheckboxVisualObject("Example Checkbox", (80,360), (33,33), True)],

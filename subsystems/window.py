@@ -59,7 +59,7 @@ class Window:
         temp1 = time.time()
         for region in self.processFunctionsRegions:
             if self.labels[region].shown:
-                self.labels[region].update(arrayToImage(self.processFunctions[region](self.blankLabels[region])))
+                self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
         temp2 = time.time()
 
         self.totalframes += (temp2-temp1)

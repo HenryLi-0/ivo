@@ -7,7 +7,7 @@ class SectionExampleB(Section):
         rmx = state.mx - 694
         rmy = state.my - 22
 
-        choice = POINT_IDLE_ARRAY if random.random() > 0.5 else POINT_SELECTED_ARRAY
+        choice = POINT_IDLE if random.random() > 0.5 else POINT_SELECTED
         for i in range(25):
             placeOver(img, choice, (math.cos((state.ticks/5+i/25))*250 + 325, math.sin((state.ticks/5+i/25))*250 + 327))
             placeOver(img, choice, (math.cos((state.ticks/2+i/25))*100 + 325, math.sin((state.ticks/2+i/25))*100 + 327))

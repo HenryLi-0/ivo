@@ -2,7 +2,6 @@
 
 from PIL import Image, ImageEnhance
 import numpy, math
-from settings import *
 
 # Convert
 
@@ -137,7 +136,7 @@ def dArrayPlaceOver(img1:numpy.ndarray, img2: numpy.ndarray, position:list|tuple
             '''So, you really messed up... told you it was dangerous...'''
             pass
 
-def neoPlaceOver(img1: Image, img2: Image, position:list|tuple, center = False):
+def placeOver(img1: Image, img2: Image, position:list|tuple, center = False):
     '''Modifies image 1 (background) as an array of image 2 (overlay) placed on top of image 1 (background), given as PIL images'''
     if center: X, Y = (position[0] - round(img2.width/2), position[1] - round(img2.height/2))
     else: X, Y = position
@@ -149,9 +148,9 @@ def neoPlaceOver(img1: Image, img2: Image, position:list|tuple, center = False):
                 min(X + img2.width, img1.width) - X,
                 min(Y + img2.height, img1.height) - Y
             ))
-            img1.paste(crop, (X, Y), crop)
+            img1.paste(crop, (round(X), round(Y)), crop)
         else:
-            img1.paste(img2, (X, Y), img2)
+            img1.paste(img2, (round(X), round(Y)), img2)
     return True
 
 def rotateDeg(img: numpy.ndarray, degrees:float):

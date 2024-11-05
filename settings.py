@@ -94,7 +94,8 @@ PLACEHOLDER_IMAGE_5_ARRAY = numpy.array(PLACEHOLDER_IMAGE_5)
 MISSING_IMAGE_PATH = os.path.join("resources", "missing.png")
 MISSING_IMAGE = Image.open(os.path.join("resources", "missing.png")).convert("RGBA")
 MISSING_IMAGE_ARRAY = numpy.array(MISSING_IMAGE)
-EMPTY_IMAGE_ARRAY = numpy.zeros((1, 1, 4), dtype=numpy.uint8)
+EMPTY_IMAGE = Image.fromarray(numpy.zeros((1, 1, 4), dtype=numpy.uint8), "RGBA")
+EMPTY_IMAGE_ARRAY = numpy.array(EMPTY_IMAGE)
 
 # Fonts
 FONT_LARGE = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medium.ttf"), 24)
@@ -104,8 +105,8 @@ FONT_SMALL = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medium.ttf"
 EDITOR_SPACING = lambda x: x*20+15
 
 # Cursors
-CURSOR_ARROW_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor_arrow.png"))
-CURSOR_SELECT_ARRAY = getArrayImageRGBAFromPath(os.path.join("resources", "cursor_select.png"))
+CURSOR_ARROW = getImageRGBAFromPath(os.path.join("resources", "cursor_arrow.png"))
+CURSOR_SELECT = getImageRGBAFromPath(os.path.join("resources", "cursor_select.png"))
 
 # Image Arrays
 ORB_IDLE = getImageRGBAFromPath(os.path.join("resources", "orb_idle.png"))

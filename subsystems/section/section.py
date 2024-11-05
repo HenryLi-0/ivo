@@ -23,5 +23,11 @@ class Section:
             if state.ivos[id][0] == "a":
                 state.ivos[id][1].tick(img, state.interacting==id)
 
+        Section.overlayCrosshair(state, img, rmx, rmy)
+
         return img    
     
+    def overlayCrosshair(state: State, im, rmx, rmy):
+        if SHOW_CROSSHAIR:
+            if state.mPressed: placeOver(im, CURSOR_SELECT, (rmx, rmy), True)
+            else: placeOver(im, CURSOR_ARROW, (rmx, rmy), True)

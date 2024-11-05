@@ -16,4 +16,6 @@ class SectionExampleB(Section):
             if state.ivos[id][0] == "b":
                 state.ivos[id][1].tick(img, state.interacting==id)
 
+        Section.overlayCrosshair(state, img, rmx, rmy)
+
         return img    

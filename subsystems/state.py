@@ -53,7 +53,9 @@ class State:
 
     def mouseInSection(self, section):
         return SECTIONS_DATA[section][0][0] <= self.mx and self.mx <= SECTIONS_DATA[section][1][0] and SECTIONS_DATA[section][0][1] <= self.my and self.my <= SECTIONS_DATA[section][1][1]
-    
+    def mouseWasInSection(self, section):
+        return SECTIONS_DATA[section][0][0] <= self.prevmx and self.prevmx <= SECTIONS_DATA[section][1][0] and SECTIONS_DATA[section][0][1] <= self.prevmy and self.prevmy <= SECTIONS_DATA[section][1][1]
+
     def tick(self,mx,my,mPressed,fps,keyQueue,mouseScroll):
         '''Entire Screen: `(0,0) to (1365,697)`: size `(1366,698)`'''
         self.prevmx = self.mx

@@ -37,6 +37,7 @@ class Window:
         self.interface = Interface()
 
         self.processFunctions = {
+            " " : self.interface.processNone,
             "a" : self.interface.processExampleA,
             "b" : self.interface.processExampleB,
         }
@@ -59,11 +60,11 @@ class Window:
         temp1 = time.time()
         if self.fps > INTERFACE_FPS:
             for region in self.processFunctionsRegions:
-                if self.labels[region].shown:
+                if (region != " ") and (self.labels[region].shown):
                     self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
         else:
             for region in self.interface.s.scheduledSectionUpdate:
-                if self.labels[region].shown:
+                if (region != " ") and (self.labels[region].shown):
                     self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
             self.interface.s.scheduledSectionUpdate = []
 

@@ -32,8 +32,13 @@ class Interface:
                 if key in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789":
                     self.s.stringKeyQueue+=key
                 else:
-                    if key=="space":
-                        self.s.stringKeyQueue+=" "
+                    if key=="space":    self.s.stringKeyQueue+=" "
+                    if key=="slash":    self.s.stringKeyQueue+="/"
+                    if key=="asterisk": self.s.stringKeyQueue+="*"
+                    if key=="equal":    self.s.stringKeyQueue+="="
+                    if key=="at":       self.s.stringKeyQueue+="@"
+                    if key=="minus":    self.s.stringKeyQueue+="-"
+                    if key=="colon":    self.s.stringKeyQueue+=":"
                     if key=="BackSpace":
                         if len(self.s.stringKeyQueue) > 0:
                             self.s.stringKeyQueue=self.s.stringKeyQueue[0:-1]
@@ -54,8 +59,6 @@ class Interface:
         else:
             keybind = [False, keybind]
         self.s.currentKeybind = keybind
-        
-        print(keybind)
 
         '''Mouse Scroll'''
         self.s.mouseScroll = mouseScroll
@@ -100,6 +103,12 @@ class Interface:
 
         self.s.interacting = interacting
         self.s.previousInteracting = previousInteracting
+
+        '''Schedule Section Updates'''
+        if not(self.s.interacting in SYS_IVOS):
+            self.s.scheduleSectionUpdate(self.s.ivos[self.s.interacting][0])
+        
+        self.s.scheduleSectionUpdate("b")
 
     def processExampleA(self, im):
         return SectionExampleA.render(self.s, im)

@@ -15,6 +15,7 @@ FLOAT_ACCURACY = 3 # The number of digits after the decimal point things will ge
 
 '''Visuals'''
 INTERFACE_FPS = 60 # The desired operating FPS
+FPS_DAMPENING = 1 # The number of seconds between FPS calculations
 TICK_MS = 1 # Extra delay between frames, must be 1 or greater
 OCCASIONAL_TICK_MS = 5000 # Should keep above 1 second, as it runs processes that do not need updates every tick
 
@@ -54,6 +55,7 @@ from subsystems.simplefancy import *
 
 # Version
 VERSION = "v0.0.0"
+SYS_IVOS = [-999,-998,-997,-996]
 
 # Sections
 '''

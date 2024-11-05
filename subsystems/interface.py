@@ -110,6 +110,14 @@ class Interface:
         
         self.s.scheduleSectionUpdate("b")
 
+        if SHOW_CROSSHAIR:
+            for section in SECTIONS:
+                if self.s.mouseInSection(section) or self.s.mouseWasInSection(section):
+                    self.s.scheduleSectionUpdate(section)
+
+    def processNone(self, im):
+        return im
+
     def processExampleA(self, im):
         return SectionExampleA.render(self.s, im)
     

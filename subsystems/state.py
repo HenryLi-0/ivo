@@ -48,6 +48,8 @@ class State:
         '''Sliders'''
         self.sliders = []
         self.slidersData = []
+        '''Updating'''
+        self.scheduledSectionUpdate = []
 
     def mouseInSection(self, section):
         return SECTIONS_DATA[section][0][0] <= self.mx and self.mx <= SECTIONS_DATA[section][1][0] and SECTIONS_DATA[section][0][1] <= self.my and self.my <= SECTIONS_DATA[section][1][1]
@@ -64,4 +66,9 @@ class State:
         self.deltaTicks = 1 if self.fps==0 else round(INTERFACE_FPS/self.fps)
         self.ticks += self.deltaTicks
         
-        self.mouseInPopUpSection = self.mouseInSection("a")
+        self.mouseSectionA = self.mouseInSection("a")
+        self.mouseSectionB = self.mouseInSection("b")
+
+    def scheduleSectionUpdate(self, section):
+        if not(section in self.scheduledSectionUpdate):
+            self.scheduledSectionUpdate.append(section)

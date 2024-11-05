@@ -57,9 +57,16 @@ class Window:
         self.mouseScroll = 0
         
         temp1 = time.time()
-        for region in self.processFunctionsRegions:
-            if self.labels[region].shown:
-                self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
+        if self.fps > INTERFACE_FPS:
+            for region in self.processFunctionsRegions:
+                if self.labels[region].shown:
+                    self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
+        else:
+            for region in self.interface.s.scheduledSectionUpdate:
+                if self.labels[region].shown:
+                    self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
+            self.interface.s.scheduledSectionUpdate = []
+
         temp2 = time.time()
 
         self.totalframes += (temp2-temp1)
@@ -69,9 +76,9 @@ class Window:
 
         now = time.time()
         self.fpsTimestamps.append(now)
-        while now-self.fpsTimestamps[0] > 1:
+        while now-self.fpsTimestamps[0] > FPS_DAMPENING:
             self.fpsTimestamps.pop(0)
-        self.fps = len(self.fpsTimestamps)
+        self.fps = round(len(self.fpsTimestamps)/FPS_DAMPENING)
 
         self.window.after(TICK_MS, self.windowProcesses)
 
@@ -80,6 +87,11 @@ class Window:
         print("windowOccaionalProcess")
         self.window.title(f"Interactable Visual Objects {self.interface.s.ticks}")
         print(self.getFPS())
+
+        for region in self.processFunctionsRegions:
+                if self.labels[region].shown:
+                    self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
+
         self.window.after(OCCASIONAL_TICK_MS, self.windowOccasionalProcesses)
 
     def windowStartupProcesses(self):

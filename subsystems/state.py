@@ -1,4 +1,5 @@
 '''This file is used for transfering information from interface tick and image rendering processes'''
+
 from subsystems.visuals import *
 
 class State:

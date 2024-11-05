@@ -1,14 +1,14 @@
 from settings import *
 import time, math
 from PIL import Image, ImageTk
-from subsystems.render import setTransparency, setSizeSize
+from subsystems.render import *
 
 n = 100
 
-BACKGROUND_ARRAY = setSizeSize(PLACEHOLDER_IMAGE_ARRAY, (1024,1024))
-BACKGROUND = Image.fromarray(BACKGROUND_ARRAY)
-TRANSPARENT_ARRAY = setSizeSize(setTransparency(PLACEHOLDER_IMAGE_5_ARRAY,50), (1024,1024))
-TRANSPARENT = Image.fromarray(TRANSPARENT_ARRAY)
+BACKGROUND = setSizeSize(PLACEHOLDER_IMAGE, (1024,1024))
+BACKGROUND_ARRAY = imageToArray(BACKGROUND)
+TRANSPARENT = setSizeSize(setTransparency(PLACEHOLDER_IMAGE_5,50), (1024,1024))
+TRANSPARENT_ARRAY = imageToArray(TRANSPARENT)
 
 TEST_POSITIONS = [(round(random.random()*1024)-512,round(random.random()*1024)-512) for i in range(n)]
 
@@ -61,17 +61,19 @@ print(f"placeOver avg: {total/n}")
 
 def neoPlaceOver(img1: Image, img2: Image, position:list|tuple, center = False):
     '''Modifies image 1 (background) as an array of image 2 (overlay) placed on top of image 1 (background), given as PIL images'''
-    if center: X, Y = (position[0] - round(img2.width/2), position[1] - round(img2.height/2))
+    if center: X, Y = (position[0] - math.floor(img2.width/2), position[1] - math.floor(img2.height/2))
     else: X, Y = position
     if (X < img1.width) and (Y < img1.height) and (X + img2.width > 0) and (Y + img2.height > 0):
         if (X < 0) or (Y < 0) or (X + img2.width > img1.width) or (Y + img2.height > img1.height):
+            SX = math.floor(max(X, 0))
+            SY = math.floor(max(Y, 0))
             crop = img2.crop((
-                max(0, X) - X,
-                max(0, Y) - Y,
-                min(X + img2.width, img1.width) - X,
-                min(Y + img2.height, img1.height) - Y
+                max(-X, 0),
+                max(-Y, 0),
+                max(-X, 0) + (math.floor(min(X + img2.width, img1.width)) - SX),
+                max(-Y, 0) + (math.floor(min(Y + img2.height, img1.height)) - SY)
             ))
-            img1.paste(crop, (X, Y), crop)
+            img1.paste(crop, (SX, SY), crop)
         else:
             img1.paste(img2, (X, Y), img2)
     return True
@@ -87,9 +89,12 @@ for location in TEST_POSITIONS:
 print(f"neoPlaceOver avg: {total/n}")
 
 
+# from subsystems.render import rotateDeg
 # temp1 = BACKGROUND.copy()
-# temp2 = TRANSPARENT.copy()
+# # temp2 = TRANSPARENT.copy()
+# temp2 = rotateDeg(TRANSPARENT.copy(), 45)
 
-# neoPlaceOver(temp1, temp2, (512,512), True)
+# print(temp2.width, temp2.height)
 
+# neoPlaceOver(temp1, temp2, (100,50), True)
 # temp1.show()

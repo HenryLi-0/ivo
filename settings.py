@@ -98,10 +98,12 @@ EMPTY_IMAGE = Image.fromarray(numpy.zeros((1, 1, 4), dtype=numpy.uint8), "RGBA")
 EMPTY_IMAGE_ARRAY = numpy.array(EMPTY_IMAGE)
 
 # Fonts
-FONT_LARGE = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medium.ttf"), 24)
-FONT_MEDIUM = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medium.ttf"), 15)
-FONT_SMALL_MEDIUM = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medium.ttf"), 12)
-FONT_SMALL = ImageFont.truetype(os.path.join("resources", "Comfortaa-Medium.ttf"), 10)
+FONTS_ALL = ["Comfortaa-Medium.ttf", "Orbitron-VariableFont_wght.ttf", "Tiny5-Regular.ttf", "TurretRoad-Medium.ttf", "ZenDots-Regular.ttf"]
+FONT_PATH = os.path.join("resources", "fonts", FONTS_ALL[4])
+FONT_LARGE = ImageFont.truetype(FONT_PATH, 24)
+FONT_MEDIUM = ImageFont.truetype(FONT_PATH, 15)
+FONT_SMALL_MEDIUM = ImageFont.truetype(FONT_PATH, 12)
+FONT_SMALL = ImageFont.truetype(FONT_PATH, 10)
 EDITOR_SPACING = lambda x: x*20+15
 
 # Cursors

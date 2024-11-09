@@ -39,6 +39,7 @@ class State:
         '''Control'''
         self.interacting = -999
         self.previousInteracting = -999
+        self.lastInteraction = self.interacting
         self.mouseScroll = 0 
         self.stringKeyQueue = ""
         self.previousKeyQueue = []

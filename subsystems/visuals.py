@@ -83,6 +83,10 @@ class VisualObject:
             self.positionO.setPosition((max(minX,min(pos[0],maxX)), max(minY,min(pos[1],maxY))))
     def getInteractable(self, rmx, rmy):
         return self.positionO.getInteract(rmx, rmy)
+    def keyAction(self, keys):
+        for key in keys:
+            if key in KB_CONFIRM:
+                pass
 
 class OrbVisualObject(VisualObject):
     '''A movable point.'''

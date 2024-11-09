@@ -42,8 +42,9 @@ FORMAT_TIME = lambda x: time.strftime("%I:%M:%S %p %m/%d/%Y", time.localtime(x))
 
 
 '''Keybinds'''
-KB_IGNORE    = ["Win_L"]                                                                     # Keys to ignore
-KB_EXAMPLE   = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("space" in keys) # Example Keybind
+KB_IGNORE  = ["Win_L"]                                                                      # Keys to ignore
+KB_CONFIRM = ["Return", "Control_L"]                                                        # Keys to confirm/activate
+KB_EXAMPLE = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("space" in keys)  # Example Keybind
 
 
 '''Constants - DO NOT CHANGE!!!'''
@@ -99,7 +100,7 @@ EMPTY_IMAGE_ARRAY = numpy.array(EMPTY_IMAGE)
 
 # Fonts
 FONTS_ALL = ["Comfortaa-Medium.ttf", "Orbitron-VariableFont_wght.ttf", "Tiny5-Regular.ttf", "TurretRoad-Medium.ttf", "ZenDots-Regular.ttf"]
-FONT_PATH = os.path.join("resources", "fonts", FONTS_ALL[4])
+FONT_PATH = os.path.join("resources", "fonts", FONTS_ALL[0])
 FONT_LARGE = ImageFont.truetype(FONT_PATH, 24)
 FONT_MEDIUM = ImageFont.truetype(FONT_PATH, 15)
 FONT_SMALL_MEDIUM = ImageFont.truetype(FONT_PATH, 12)

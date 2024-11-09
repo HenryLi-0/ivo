@@ -42,7 +42,7 @@ class Interface:
                     if key=="BackSpace":
                         if len(self.s.stringKeyQueue) > 0:
                             self.s.stringKeyQueue=self.s.stringKeyQueue[0:-1]
-                    if key=="Return" or key=="Control_L":
+                    if key in KB_CONFIRM:
                         interacting = -998
                         break
         self.s.previousKeyQueue = keyQueue.copy()
@@ -85,7 +85,7 @@ class Interface:
                             processed = True
                             break
                 if processed: break
-        if interacting != -999:
+        if not(interacting in SYS_IVOS):
             section = self.s.ivos[interacting][0]
             self.s.ivos[interacting][1].updatePos(self.s.mx - SECTIONS_DATA[section][0][0], self.s.my - SECTIONS_DATA[section][0][1])
             self.s.ivos[interacting][1].keepInFrame(SECTIONS_DATA[section][3][0],SECTIONS_DATA[section][3][1],SECTIONS_DATA[section][4][0],SECTIONS_DATA[section][4][1])
@@ -101,6 +101,9 @@ class Interface:
                 else:
                     self.s.ivos[previousInteracting][1].updateText(self.s.stringKeyQueue)
 
+        if not(interacting in SYS_IVOS):
+            self.s.lastInteraction = interacting 
+
         self.s.interacting = interacting
         self.s.previousInteracting = previousInteracting
 
@@ -108,6 +111,7 @@ class Interface:
         if not(self.s.interacting in SYS_IVOS):
             self.s.scheduleSectionUpdate(self.s.ivos[self.s.interacting][0])
         
+        self.s.scheduleSectionUpdate("a")
         self.s.scheduleSectionUpdate("b")
 
         if SHOW_CROSSHAIR:
@@ -125,7 +129,8 @@ class Interface:
         return SectionExampleB.render(self.s, im)
 
     def saveState(self):
-        pass
+        return self.s
 
     def close(self):
+        self.s = State()
         pass

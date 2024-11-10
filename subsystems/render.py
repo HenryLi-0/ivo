@@ -163,26 +163,26 @@ def rotateDegHundred(img: Image, cent:float):
     '''Returns a copy of the given Image as a rotated version of the given Image by (cent) cents, using the 0 up CCW rotation system. 100 cents = 360 degrees, 1 cent = 3.6 degrees'''
     return img.rotate(cent*3.6,expand=True)
 
-def setSize(img: Image, size):
+def setSize(img: Image, size:float):
     '''Returns a copy of the given Image scaled by size, given the size change (given with 100 as normal, >100 scale up, <100 scale down)'''
     x, y = img.width, img.height
     return img.resize((max(1, (round(x*(size/100)))),max(1, round(y*(size/100)))),Image.Resampling.NEAREST)
 
-def setSizeSize(img: Image, size):
+def setSizeSize(img: Image, size:list|tuple):
     '''Returns a copy of the given image with set size size, given the exact target sizes'''
     return img.resize((max(1,size[0]), max(1,size[1])), Image.Resampling.NEAREST)
 
-def setSizeSizeBlur(img: Image, size):
+def setSizeSizeBlur(img: Image, size:float):
     '''Returns a copy of the given image with set size size, given the exact target sizes, resampling is hamming!'''
     return img.resize((size[0], size[1]), Image.Resampling.HAMMING)
 
-def setColorEffect(img: Image, colorEffect):
+def setColorEffect(img: Image, colorEffect:float):
     '''Returns a copy of the given Image with a color shift, given the shift value (given 0-100)'''
     imgc = imageToArray(img)
     imgc[:, :, 0:2] += numpy.uint8(colorEffect/100*255)
     return arrayToImage(imgc)
 
-def setTransparency(img: Image, transparency):
+def setTransparency(img: Image, transparency:float):
     '''Returns a copy of the given Image with transparency multiplied, given the transparency value (given 0-100, 0 = clear, 100 = normal)'''
     if transparency == 100: return img
     imgc = imageToArray(img)
@@ -190,18 +190,18 @@ def setTransparency(img: Image, transparency):
     imgc[:, :, 3] = imgMask
     return arrayToImage(imgc)
 
-def setBrightness(img: Image, brightness):
+def setBrightness(img: Image, brightness:float):
     '''Returns a copy of the given Image with brightness changed, given the brightness value (>50 = brighter, <50 = darker)'''
     return ImageEnhance.Brightness(img).enhance((brightness+50)/100)
 
-def setBlur(img: Image, pixelation):
+def setBlur(img: Image, pixelation:float):
     '''Returns a copy of the given Image blured, given the blur value (given 0-100, 0 = normal, 100 = very pixelated)'''
     if pixelation <= 1: return img
     x, y = img.width, img.height
     imgc = img.resize((max(1, (round(x/pixelation*(x/100)))),max(1, round(y/pixelation*(y/100)))))
     return imgc.resize((round(x),round(y)))
 
-def setLimitedSize(img: Image, size):
+def setLimitedSize(img: Image, size:int):
     '''Returns a copy of the given Image scaled to fix inside a (size x size) shape'''
     x, y = img.width, img.height
     scaleFactor = size/x if x>y else size/y

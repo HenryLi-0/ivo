@@ -16,6 +16,7 @@ class Window:
         self.window.grid()
         self.window.title("Interactable Visual Objects!")
         self.window.geometry("1366x698")
+        # self.window.wm_attributes('-alpha', 0.5)
         # self.window.minsize(500,500)
         # self.window.maxsize(500,500)
         self.window.configure(background=BACKGROUND_COLOR)

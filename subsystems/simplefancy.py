@@ -2,7 +2,7 @@
 
 from PIL import Image
 import numpy, random, colorsys
-from subsystems.render import arrayToImage
+from subsystems.render import *
 
 def getArrayImageRGBAFromPath(path):
     '''Given a path, opens the image, converts it to RGBA, and returns it as a numpy array.'''
@@ -58,8 +58,9 @@ def translatePastelLight(color):
     colorC = colorsys.hsv_to_rgb(colorC[0],colorC[1],colorC[2])
     return [round(colorC[0]*255), round(colorC[1]*255), round(colorC[2]*255), color[3]]
 
-def genereateThemedBorderRectangleInstructions(size:list|tuple = (25,25),borderColor:list|tuple = (255,255,255,255)):
+def genereateThemedBorderRectangleInstructions(size:list|tuple = (25,25),borderColor:list|tuple = (255,255,255,255), background:Image = None, backgroundOffset:list|tuple = (0,0)):
     instructions = []
+    if background != None: instructions.append([background, backgroundOffset])
     row = generateColorBox((size[0],3), borderColor)
     col = generateColorBox((3,size[1]), borderColor)
     instructions.append([row, (0,0)])

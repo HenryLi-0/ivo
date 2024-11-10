@@ -20,6 +20,7 @@ TICK_MS = 1 # Extra delay between frames, must be 1 or greater
 OCCASIONAL_TICK_MS = 5000 # Should keep above 1 second, as it runs processes that do not need updates every tick
 
 SHOW_CROSSHAIR = False # Shows a crosshair for the mouse's position
+LAST_INTERACTION_KEY_TIME = 1 # Amount of seconds for last interaction to be active after key activation
 
 hexColorToRGBA = lambda hexcolor: tuple(int(hexcolor[i:i+2], 16) for i in (1, 3, 5)) + (255,)
 
@@ -42,9 +43,10 @@ FORMAT_TIME = lambda x: time.strftime("%I:%M:%S %p %m/%d/%Y", time.localtime(x))
 
 
 '''Keybinds'''
-KB_IGNORE  = ["Win_L"]                                                                      # Keys to ignore
-KB_CONFIRM = ["Return", "Control_L"]                                                        # Keys to confirm/activate
-KB_EXAMPLE = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("space" in keys)  # Example Keybind
+KB_IGNORE   = ["Win_L"]                                                                     # Keys to ignore
+KB_CONFIRM  = ["Return", "Control_L"]                                                       # Keys to confirm
+KB_ACTIVATE = ["space", "Return"]                                                           # Keys to activate/trigger
+KB_EXAMPLE  = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("space" in keys) # Example Keybind
 
 
 '''Constants - DO NOT CHANGE!!!'''

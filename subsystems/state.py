@@ -41,7 +41,7 @@ class State:
         self.previousInteracting = -999
         self.lastInteraction = self.interacting
         self.mouseScroll = 0 
-        self.stringKeyQueue = ""
+        self.risingKeyQueue = []
         self.previousKeyQueue = []
         self.consoleAlerts = []
         self.keybindLastUpdate = time.time()
@@ -75,3 +75,17 @@ class State:
     def scheduleSectionUpdate(self, section):
         if not(section in self.scheduledSectionUpdate):
             self.scheduledSectionUpdate.append(section)
+    
+    def keyConversion(key):
+        if key in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789":
+            return ord(key)
+        else:
+            if key=="space":    return ord(" ")
+            if key=="slash":    return ord("/")
+            if key=="asterisk": return ord("*")
+            if key=="equal":    return ord("=")
+            if key=="at":       return ord("@")
+            if key=="minus":    return ord("-")
+            if key=="colon":    return ord(":")
+            if key=="BackSpace":return -1
+        return None

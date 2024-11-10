@@ -4,7 +4,7 @@ import numpy
 from PIL import Image, ImageTk
 from subsystems.simplefancy import generateColorBox
 from settings import PLACEHOLDER_IMAGE, hexColorToRGBA
-from subsystems.render import placeOver
+from subsystems.render import *
 
 class LabelWrapper:
     '''A wrapper for tkinter labels'''

@@ -8,7 +8,6 @@ from subsystems.render import *
 from subsystems.fancy import *
 from subsystems.simplefancy import *
 from subsystems.visuals import *
-from subsystems.counter import Counter
 from subsystems.point import *
 from subsystems.bay import *
 from subsystems.state import *

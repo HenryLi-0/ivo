@@ -15,8 +15,14 @@ from subsystems.label import *
 from subsystems.point import *
 from subsystems.render import *
 from subsystems.simplefancy import *
+from subsystems.state import *
 from subsystems.visuals import *
 from subsystems.window import *
+
+'''Test import all sections'''
+from subsystems.section.section  import *
+from subsystems.section.exampleA import *
+from subsystems.section.exampleB import *
 
 class Check:
     def check():

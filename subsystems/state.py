@@ -1,6 +1,7 @@
 '''This file is used for transfering information from interface tick and image rendering processes'''
 
 from subsystems.visuals import *
+from subsystems.counter import Counter
 
 class State:
     def __init__(self):
@@ -13,6 +14,7 @@ class State:
         self.fps = 0
         self.ticks = 0
         self.deltaTicks = 1
+        self.c = Counter()
         '''Interactable Visual Objects'''
         '''
         Code:

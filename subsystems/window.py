@@ -6,7 +6,6 @@ from PIL import ImageTk, Image
 import time, math
 from subsystems.interface import Interface
 from subsystems.label import LabelWrapper
-from subsystems.render import arrayToImage
 from settings import *
 
 class Window:
@@ -44,9 +43,6 @@ class Window:
         }
         self.processFunctionsRegions = list(self.processFunctions.keys())
 
-        self.totalframes = 0
-        self.framesdone = 0
-
     def windowProcesses(self):
         '''window processes'''
         mx = self.window.winfo_pointerx()-self.window.winfo_rootx()
@@ -57,8 +53,7 @@ class Window:
         '''update screens'''
         self.interface.tick(mx,my,self.mPressed, self.fps, self.keysPressed, self.mouseScroll)
         self.mouseScroll = 0
-        
-        temp1 = time.time()
+
         if self.fps > INTERFACE_FPS:
             for region in self.processFunctionsRegions:
                 if (region != " ") and (self.labels[region].shown):
@@ -68,13 +63,6 @@ class Window:
                 if (region != " ") and (self.labels[region].shown):
                     self.labels[region].update(self.processFunctions[region](self.blankLabels[region]))
             self.interface.s.scheduledSectionUpdate = []
-
-        temp2 = time.time()
-
-        self.totalframes += (temp2-temp1)
-        self.framesdone += 1
-
-        # print(f"avg of {self.framesdone} frames: {self.totalframes/self.framesdone} seconds")
 
         now = time.time()
         self.fpsTimestamps.append(now)

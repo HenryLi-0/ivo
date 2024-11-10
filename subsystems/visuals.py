@@ -321,7 +321,7 @@ class CheckboxVisualObject(VisualObject):
     
 class TextButtonPushVisualObject(VisualObject):
     '''A button, but it has text! and it resets itself after some ticks!'''
-    def __init__(self, name, text:Image, pos:tuple|list, seconds = 60):
+    def __init__(self, name, text:Image, pos:tuple|list, ticks = 60):
         self.type = "button"
         self.name = name
         self.lastInteraction = time.time()
@@ -331,7 +331,7 @@ class TextButtonPushVisualObject(VisualObject):
         self.positionO = RectangularPositionalBox((self.img.width,self.img.height), pos[0], pos[1])
         self.lastPressed = 9999999
         self.state = False
-        self.time = seconds
+        self.time = ticks
     def tick(self, img, visualactive, active):
         if active: self.lastInteraction = time.time()
         if active: self.lastPressed = 0

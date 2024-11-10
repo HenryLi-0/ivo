@@ -55,6 +55,7 @@ KB_EXAMPLE  = lambda keys: (len(keys) == 2) and ("Control_L" in keys) and ("spac
 from PIL import Image, ImageFont
 import numpy
 from subsystems.simplefancy import *
+from subsystems.render import *
 
 # Version
 VERSION = "v0.0.0"
@@ -65,17 +66,18 @@ SYS_IVOS = [-999,-998,-997,-996]
 - Example A Area: `(  22,  22) to ( 671, 675)` : size `( 650, 654)`
 - Example B Area: `( 694,  22) to (1343, 675)` : size `( 650, 654)`
 
-Region ID : Top Left, Bottom Right, Size, Keep In Relative Top Left, Keep In Relative Top Right
+Region ID : Top Left, Bottom Right, Size, Keep In Relative Top Left, Keep In Relative Bottom Right
 '''
 SECTIONS_DATA = {
-    " ": [(   0,   0),(   0,   0),(   0,   0),(   0,   0),(   0,   0)],
+    " ": [(   0,   0),(1366, 698),(1366, 698),(   0,   0),(1366, 698)],
     "a": [(  22,  22),( 671, 675),( 650, 654),(   0,   0),( 650, 654)],
     "b": [( 694,  22),(1343, 675),( 650, 654),(   0,   0),( 650, 654)],
 }
+FULL_BACKGROUND = setBrightness(getImageRGBAFromPath(os.path.join("resources", "backgrounds", "sample_full_background.png")), 10)
 SECTIONS_FRAME_INSTRUCTIONS = {
-    " ": [],
-    "a": genereateThemedBorderRectangleInstructions(( 650, 654),hexColorToRGBA(FRAME_COLOR)),
-    "b": genereateThemedBorderRectangleInstructions(( 650, 654),hexColorToRGBA(FRAME_COLOR)),
+    " ": [[FULL_BACKGROUND, (0,0)]],
+    "a": genereateThemedBorderRectangleInstructions(( 650, 654), hexColorToRGBA(FRAME_COLOR), setBrightness(FULL_BACKGROUND,10), ( -22,-22)),
+    "b": genereateThemedBorderRectangleInstructions(( 650, 654), hexColorToRGBA(FRAME_COLOR), setBrightness(FULL_BACKGROUND,10), (-694,-22)),
 }
 SECTIONS = list(SECTIONS_DATA.keys())
 
@@ -113,7 +115,7 @@ EDITOR_SPACING = lambda x: x*20+15
 CURSOR_ARROW = getImageRGBAFromPath(os.path.join("resources", "cursor_arrow.png"))
 CURSOR_SELECT = getImageRGBAFromPath(os.path.join("resources", "cursor_select.png"))
 
-# Image Arrays
+# Image
 ORB_IDLE = getImageRGBAFromPath(os.path.join("resources", "orb_idle.png"))
 ORB_SELECTED = getImageRGBAFromPath(os.path.join("resources", "orb_selected.png"))
 POINT_IDLE = getImageRGBAFromPath(os.path.join("resources", "point_idle.png"))

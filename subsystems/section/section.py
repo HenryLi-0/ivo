@@ -20,8 +20,8 @@ class Section:
         placeOver(img, displayText(f"Mouse Press: {state.mPressed}", "m", colorTXT=(100,255,100,255) if state.mPressed else (255,100,100,255)), (200,55))
 
         for id in state.ivos:
-            if state.ivos[id][0] == "a":
-                state.ivos[id][1].tick(img, state.interacting==id)
+            if state.ivos[id][0] == "h":
+                state.ivos[id][1].tick(img, state.interacting==id or ((state.lastInteraction==id) and (abs(time.time() - state.ivos[id][1].lastInteraction) < LAST_INTERACTION_KEY_TIME)), state.interacting==id)
 
         Section.overlayCrosshair(state, img, rmx, rmy)
 

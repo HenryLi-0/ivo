@@ -73,7 +73,7 @@ class Window:
         self.totalframes += (temp2-temp1)
         self.framesdone += 1
 
-        print(f"avg of {self.framesdone} frames: {self.totalframes/self.framesdone} seconds")
+        # print(f"avg of {self.framesdone} frames: {self.totalframes/self.framesdone} seconds")
 
         now = time.time()
         self.fpsTimestamps.append(now)

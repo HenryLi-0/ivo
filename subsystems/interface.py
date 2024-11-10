@@ -24,27 +24,19 @@ class Interface:
         '''Entire Screen: `(0,0) to (1365,697)`: size `(1366,698)`'''
         self.s.tick(mx,my,mPressed,fps,keyQueue,mouseScroll)
 
+        '''Copy State Interaction Info'''
         interacting = self.s.interacting
 
         '''Keyboard'''
-        for key in keyQueue: 
-            if not key in self.s.previousKeyQueue:
-                if key in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789":
-                    self.s.stringKeyQueue+=key
-                else:
-                    if key=="space":    self.s.stringKeyQueue+=" "
-                    if key=="slash":    self.s.stringKeyQueue+="/"
-                    if key=="asterisk": self.s.stringKeyQueue+="*"
-                    if key=="equal":    self.s.stringKeyQueue+="="
-                    if key=="at":       self.s.stringKeyQueue+="@"
-                    if key=="minus":    self.s.stringKeyQueue+="-"
-                    if key=="colon":    self.s.stringKeyQueue+=":"
-                    if key=="BackSpace":
-                        if len(self.s.stringKeyQueue) > 0:
-                            self.s.stringKeyQueue=self.s.stringKeyQueue[0:-1]
-                    if key in KB_CONFIRM:
-                        interacting = -998
-                        break
+        self.s.risingKeyQueue = []
+        for key in keyQueue:
+            if not (key in self.s.previousKeyQueue):
+                if key in KB_CONFIRM:
+                    interacting = -998
+                    break
+                temp = State.keyConversion(key)
+                if temp != None:
+                    self.s.risingKeyQueue.append(temp)
         self.s.previousKeyQueue = keyQueue.copy()
 
         keybind = None
@@ -73,8 +65,12 @@ class Interface:
         '''Interacting With...'''
         self.s.previousInteracting = interacting
         previousInteracting = self.s.previousInteracting
-        if not(self.s.mPressed):
+        if not(self.s.mPressed) and len(keyQueue) == 0:
             interacting = -999
+        for key in keyQueue:
+            if key in KB_ACTIVATE:
+                interacting = self.s.lastInteraction
+        
         if interacting == -999 and self.s.mPressed and self.s.mRising:
             processed = False
             for id in self.s.ivos:
@@ -89,31 +85,24 @@ class Interface:
             section = self.s.ivos[interacting][0]
             self.s.ivos[interacting][1].updatePos(self.s.mx - SECTIONS_DATA[section][0][0], self.s.my - SECTIONS_DATA[section][0][1])
             self.s.ivos[interacting][1].keepInFrame(SECTIONS_DATA[section][3][0],SECTIONS_DATA[section][3][1],SECTIONS_DATA[section][4][0],SECTIONS_DATA[section][4][1])
-        if (self.s.mPressed) and (previousInteracting == -999) and (interacting != -999) and (self.s.ivos[interacting][1].type  == "textbox"): 
-            self.s.stringKeyQueue = self.s.ivos[interacting][1].txt
-        if (interacting != -999) and (self.s.ivos[interacting][1].type  == "textbox"):
-            self.s.ivos[interacting][1].updateText(self.s.stringKeyQueue)
-        if (previousInteracting != -999) and (previousInteracting != -998):
-            if (self.s.ivos[previousInteracting][1].type  == "textbox"):
-                if not(interacting == -998):
-                    interacting = previousInteracting
-                    self.s.ivos[interacting][1].updateText(self.s.stringKeyQueue)
-                else:
-                    self.s.ivos[previousInteracting][1].updateText(self.s.stringKeyQueue)
 
         if not(interacting in SYS_IVOS):
-            self.s.lastInteraction = interacting 
+            self.s.lastInteraction = interacting
+        
+        if len(keyQueue) > 0:
+            self.s.ivos[self.s.lastInteraction][1].keyAction(self.s.risingKeyQueue)
 
+        '''Update State Interaction Info'''
         self.s.interacting = interacting
         self.s.previousInteracting = previousInteracting
 
         '''Schedule Section Updates'''
         if not(self.s.interacting in SYS_IVOS):
             self.s.scheduleSectionUpdate(self.s.ivos[self.s.interacting][0])
-        
         self.s.scheduleSectionUpdate("a")
         self.s.scheduleSectionUpdate("b")
 
+        '''Crosshair'''
         if SHOW_CROSSHAIR:
             for section in SECTIONS:
                 if self.s.mouseInSection(section) or self.s.mouseWasInSection(section):

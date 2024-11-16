@@ -73,11 +73,11 @@ SECTIONS_DATA = {
     "a": [(  22,  22),( 671, 675),( 650, 654),(   0,   0),( 650, 654)],
     "b": [( 694,  22),(1343, 675),( 650, 654),(   0,   0),( 650, 654)],
 }
-FULL_BACKGROUND = setBrightness(getImageRGBAFromPath(os.path.join("resources", "backgrounds", "sample_full_background.png")), 10)
+FULL_BACKGROUND = setBrightnessEffect(getImageRGBAFromPath(os.path.join("resources", "backgrounds", "sample_full_background.png")), 10)
 SECTIONS_FRAME_INSTRUCTIONS = {
     " ": [[FULL_BACKGROUND, (0,0)]],
-    "a": genereateThemedBorderRectangleInstructions(( 650, 654), hexColorToRGBA(FRAME_COLOR), setBrightness(FULL_BACKGROUND,10), ( -22,-22)),
-    "b": genereateThemedBorderRectangleInstructions(( 650, 654), hexColorToRGBA(FRAME_COLOR), setBrightness(FULL_BACKGROUND,10), (-694,-22)),
+    "a": genereateThemedBorderRectangleInstructions(( 650, 654), hexColorToRGBA(FRAME_COLOR), setBrightnessEffect(FULL_BACKGROUND,10), ( -22,-22)),
+    "b": genereateThemedBorderRectangleInstructions(( 650, 654), hexColorToRGBA(FRAME_COLOR), setBrightnessEffect(FULL_BACKGROUND,10), (-694,-22)),
 }
 SECTIONS = list(SECTIONS_DATA.keys())
 

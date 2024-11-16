@@ -190,9 +190,9 @@ def setTransparency(img: Image, transparency:float):
     imgc[:, :, 3] = imgMask
     return arrayToImage(imgc)
 
-def setBrightness(img: Image, brightness:float):
-    '''Returns a copy of the given Image with brightness changed, given the brightness value (>50 = brighter, <50 = darker)'''
-    return ImageEnhance.Brightness(img).enhance((brightness+50)/100)
+def setBrightnessEffect(img: Image, brightness:float):
+    '''Returns a copy of the given Image with brightness changed, given the brightness value (<0 = darker, 0 = normal, >0 = brighter)'''
+    return ImageEnhance.Brightness(img).enhance((brightness+100)/100)
 
 def setBlur(img: Image, pixelation:float):
     '''Returns a copy of the given Image blured, given the blur value (given 0-100, 0 = normal, 100 = very pixelated)'''
